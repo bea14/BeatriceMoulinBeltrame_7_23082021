@@ -6,9 +6,7 @@ const bcrypt = require('bcrypt');
 //Package crypto-js
 const cryptoJS = require("crypto-js");
 //connect to DB
-const sql = require("../models/db");
-
-const { createPool } = require('mysql');
+const sql = require("../config/db.config");
 //user model
 const User = require("../models/user.model");
 
@@ -21,10 +19,15 @@ var iv = cryptoJS.enc.Hex.parse(process.env.iv);
 const encryptEmail = (string) => {
   const enc = cryptoJS.AES.encrypt(string, key, { iv: iv }).toString();
   return enc;
+//Decrypt email
+const decryptEmail = (string) => {
+    const dec = cryptoJS.AES.decrypt(string,key, { iv: iv }).toString();
+    return dec
+}
 };
 
 //creation nouvel utilisateur
-exports.signin = (req, res, next) => {
+exports.signup = (req, res, next) => {
     //hachage du mot de passe
     bcrypt
         .hash(req.body.password, 10) //appelle la fonction de hachage et "sale" le mdp 10 fois
@@ -37,6 +40,8 @@ exports.signin = (req, res, next) => {
                 email: encryptEmail(req.body.email),
                 password: hash,
                 avatar: req.body.avatar,
+                creationdate: req.body.date,
+                updatedate: req.body.date,
                 role: req.body.role,
             });
             // Ajout de l'utilisateur à la table user de la db
@@ -116,30 +121,38 @@ exports.getAllUsers = (req, res, next) => {
 
 //Affichage du profil d'un utilisateur
 exports.getProfile = (req, res, next) => {
-    const userId = req.params.id;
-    sql.query('SELECT lastname, firstname, pseudo, email, password, sexe, avatar, birthdate, bio FROM user WHERE id=?', [userId], (error, results, fields) => {
+    const Id = req.params.id;
+    console.log(req.params.id)
+    console.log(Id)
+    sql.query('SELECT lastname, firstname, pseudo, email, password, sexe, avatar, birthdate, bio, role FROM user WHERE id=?', [Id], (error, results, fields) => {
         if (error) {
             return res.status(500).json({ error });
         } else if (results.length === 0) {
             return res.status(401).json({ message: 'utilisateur inexistant' });
         } else {
             return res.status(200).json({ user: results[0] });
+            //decryptage email            
+            //email: decryptEmail(user.email);           
         }
     });
 }
 
 //Mise à jour du profil d'un utilisateur
 exports.updateProfile = (req, res, next) => {
-    const lastname = req.body.lastname;
-    const firstname = req.body.firstname;
-    const pseudo = req.body.pseudo;
-    const email = req.body.email;
-    const password = req.body.password;
-    const sexe = req.body.sexe;
-    const avatar = req.body.avatar;
-    const birthdate = req.body.birthdate;
-    const bio = req.body.bio;
-    sql.query('UPDATE user SET lastname=?, firstname=?, pseudo=?, email=?, password=?, sexe=?, avatar=?, birthdate=?, bio=? WHERE id=?', [lastname, firstname, pseudo, email, password, sexe, avatar, birthdate, bio, id], (error, results, fields) => {
+    const userId = req.params.id;
+    const updatedUser = new User({    
+        lastname: req.body.lastname,
+        firstname: req.body.firstname,
+        pseudo: req.body.pseudo,
+        email: encryptEmail(req.body.email),
+        password: req.body.password,
+        sexe: req.body.sexe,
+        avatar: req.body.avatar,
+        birthdate: req.body.birthdate,
+        bio: req.body.bio,
+        role: req.body.role
+    });
+    sql.query('UPDATE user SET ? WHERE id=?', [updatedUser, userId], (error, results, fields) => {
         if (error) {
             console.log(req.body);
             return res.status(500).json({ error });
