@@ -9,6 +9,7 @@ const path = require("path");
 
 //importation des fichiers routes
 const postRoutes = require("./routes/posts.route");
+const commentRoutes = require("./routes/comments.route");
 const userRoutes = require("./routes/user.route");
 
 const app = express();
@@ -46,6 +47,6 @@ app.use("/upload", express.static(path.join(__dirname, "upload")));
 //Sert les routes concernant les sauces pour toute demande vers le endpoint /api/users
 app.use("/api/users", userRoutes);
 //Sert les routes concernant les utilisateurs pour toute demande vers le endpoint /api/topics
-app.use("/api/topics", postRoutes);
+app.use("/api/topics", postRoutes, commentRoutes);
 
 module.exports = app;
