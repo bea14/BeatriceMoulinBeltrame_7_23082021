@@ -15,10 +15,10 @@ const User = function(user) {
       this.creationdate = user.creationdate;      
       this.updatedate = user.updatedate;
       this.role = user.role;
-      this.isdeleted = user.isdeleted;      
+      /*this.isdeleted = user.isdeleted;      
       this.isdeleteddate = user.isdeleteddate;      
       this.isreported = user.isreported;      
-      this.isreporteddate = user.isreporteddate;
+      this.isreporteddate = user.isreporteddate;*/
     /*}*/
   };
 
