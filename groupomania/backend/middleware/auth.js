@@ -14,6 +14,7 @@ module.exports = (req, res, next) => {
             throw "Invalid user ID";
             //si valide alors la suite du code peut s'executer
         } else {
+            let userIsAdmin = false;
             if (role == 1 || role == 2) {
                 userIsAdmin = true;
             }
