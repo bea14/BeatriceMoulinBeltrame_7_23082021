@@ -12,7 +12,7 @@ exports.createPost = (req, res,next) => {
     // on récupère les données envoyées par le front
     let postData = req.body;
     //on vérifie s'il y a un fichier multimedia, si oui on récupère le lien si non on enregistre null
-    postData.media_url = req.file ? req.file.filename : null;
+    //postData.media_url = req.file ? req.file.filename : null;
     //postData.media_url = req.body.media_url ? `${req.protocol}://${req.get("host")}/upload/${req.file.filename}` : null;
     // Creation d'un post depuis le modèle
     let newPost = new Post(postData);
@@ -35,8 +35,6 @@ exports.createPost = (req, res,next) => {
 //Affichage de tous les posts par odre décroissant d'id (en gros du plus récent au plus ancien)
 exports.getAllPosts = (req, res, next) => {
     //Selection de tous les posts de la DB
-    
-//SELECT id,title,content, media_url, DATE_FORMAT(creationdate, "%d/%m/%Y") AS post_date_fr, author,tag FROM topics ORDER BY topics.id DESC
     sql.query('SELECT topics.id,topics.title,topics.content, topics.media_url, DATE_FORMAT(topics.creationdate, "%d/%m/%Y") AS post_date_fr, topics.tag, user.pseudo FROM topics INNER JOIN user ON topics.author = user.id ORDER BY topics.id DESC', (error, results, fields) => {
         if (error) {
             return res.status(500).json({ error });
@@ -63,7 +61,7 @@ exports.getOnePost = (req, res, next) => {
     //On récupère l'id du post
     const Id = req.params.id;
     //selection du post voulu
-    sql.query('SELECT id,title,content, media_url, author, DATE_FORMAT(updatedate, "%d/%m/%Y") AS post_date_fr FROM topics WHERE id=?', [Id],(error, results, fields) => {
+    sql.query('SELECT id,title,content, media_url, author, DATE_FORMAT(updatedate, "%d/%m/%Y") AS post_date_fr,tag FROM topics WHERE id=?', [Id],(error, results, fields) => {
         if (error) {
             return res.status(500).json({ error });
         }
@@ -75,12 +73,8 @@ exports.getOnePost = (req, res, next) => {
 exports.updatePost = (req, res, next) => {
     //on récupère l'id du post à mettre à jour
     const postId = req.params.id;
-    //on créé le post mis à jour d'après le modèle en ne mettant que les champs modifiables/obligatoires
-    const updatedPost = new Post({    
-        content: req.body.content,
-        author: req.body.author,
-        updatedate: req.body.updatedate
-    });
+     // on récupère les données envoyées par le front
+     let updatedPost = req.body;
     //on met à jour dans la DB le post
     sql.query('UPDATE topics SET ? WHERE id=?', [updatedPost, postId], (error, results, fields) => {
         if (error) {
@@ -100,14 +94,14 @@ exports.deletePost = (req, res, next) => {
     const postId = req.params.id;
     //on recupère l'id de l'utilisateur
     const userId = req.body.userId;
-    if (userIsAdmin || userIsAuthorized) {
-        sql.query('DELETE FROM topics WHERE id=? AND author=?', [postId, userId], (error, results, fields) => {
+    //if (userIsAdmin || userIsAuthorized) {
+        sql.query('DELETE FROM topics WHERE id=?', [postId], (error, results, fields) => {
             if (error) {
                 return res.status(500).json({ error });
             }
             return res.status(200).json({ message: 'post supprimé' });
         })
-    }
+    //}
     if(req.body.media_url) {
         fs.unlinkSync(`upload/${req.body.media_url}`);
     }

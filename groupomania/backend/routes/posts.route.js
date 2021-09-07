@@ -11,9 +11,9 @@ const multer = require('../middleware/multer-config');
 //Definition des routes pour les posts
 postRouter.post('/', multer, postCtrl.createPost); //Creation nouveau post
 postRouter.get('/',postCtrl.getAllPosts); //affichage de tous les posts
-postRouter.get('/:id',postCtrl.getAllPostsForUser); //affichage de tous les posts d'un utilisateur
+/*postRouter.get('/:id',postCtrl.getAllPostsForUser); //affichage de tous les posts d'un utilisateur*/
 postRouter.get('/:id', postCtrl.getOnePost); //affichage d'un post ayant l'id id
-postRouter.put('/:id',multer, postCtrl.updatePost);  //mise à jour d'un post
+postRouter.patch('/:id',multer, postCtrl.updatePost);  //mise à jour d'un post
 postRouter.delete('/:id',postCtrl.deletePost);  //suppression d'un post
 postRouter.post('/:id/like',postCtrl.likedislikePost); //like ou dislike d'un post
 

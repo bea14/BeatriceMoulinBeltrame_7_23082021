@@ -23,9 +23,9 @@ const encryptEmail = (string) => {
   return enc;
 };
 //Decrypt email
-const decryptEmail = (string) => {
-    const bytes = cryptoJS.AES.decrypt(string.toString(),key, { iv: iv });    
-    var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+const decryptEmail = (cryptedstring) => {
+    const bytes = cryptoJS.AES.decrypt(cryptedstring, key, { iv: iv });    
+    var plaintext = bytes.toString(cryptoJS.enc.Utf8);
     return plaintext
 };
 
@@ -57,8 +57,8 @@ exports.signup = (req, res, next) => {
                     lastname: req.body.lastname,
                     firstname: req.body.firstname,
                     pseudo: req.body.pseudo,
-                    //email: encryptEmail(req.body.email),
-                    email: req.body.email,
+                    email: encryptEmail(req.body.email),
+                    //email: req.body.email,
                     password: hash,
                     avatar: req.body.avatar,//`${req.protocol}://${req.get("host")}/upload/${req.file.filename}`
                     creationdate: req.body.creationdate,
@@ -162,11 +162,15 @@ exports.getProfile = (req, res, next) => {
         } else {
             //sinon tableau avec la réponse
             // on decrypte l'email pour l'afficher en clair            
-            /*email = results[0].email;
-            emailDecrypted = decryptEmail(email);
-            results[0].email = emailDecrypted;*/
-            // on retourne la reponse
-            return res.status(200).json({ user: results[0] });
+           // emailDecrypted = decryptEmail(results[0].email);
+           emailcrypte0=results[0].email;
+           emailDecrypted =decryptEmail(emailcrypte0);
+           email1 = "123456";
+           emailcrypte = encryptEmail(email1);
+           emaildecrypte = decryptEmail(emailcrypte);
+           mail = {email1, emailcrypte, emaildecrypte};
+;            // on retourne la reponse
+            return res.status(200).json({ user: results[0], email : {email1, emailcrypte, emaildecrypte,emailcrypte0,emailDecrypted} });
         }
     });
 }
@@ -176,12 +180,12 @@ exports.updateProfile = (req, res, next) => {
     //on récupère l'id de l'utilisateur
     const userId = req.params.id;
     // on créé l'utilisateur d'après le modèle
-    const updatedUser = new User({    
+    /*const updatedUser = new User({    
         lastname: req.body.lastname,
         firstname: req.body.firstname,
         pseudo: req.body.pseudo,
         email: encryptEmail(req.body.email),
-        password: req.body.password,
+        password: password,
         sexe: req.body.sexe,
         //On génère l'url de l'image par rapport à son nom de fichier
         avatar: req.body.avatar,//`${req.protocol}://${req.get("host")}/upload/${req.file.filename}`,
@@ -190,7 +194,8 @@ exports.updateProfile = (req, res, next) => {
         updatedate: req.body.updatedate,
         role: req.body.role
 
-    });
+    });*/
+    const updatedUser = req.body;
     // Requête de mise à jour
     sql.query('UPDATE user SET ? WHERE id=?', [updatedUser, userId], (error, results, fields) => {
         //si erreur message
@@ -211,6 +216,12 @@ exports.updateProfile = (req, res, next) => {
 exports.deleteProfile = (req, res, next) => {
     //on récupère l'id de l'utilisateur à supprimer
     const userId = req.params.id;
+    const role = req.body.role;
+    let userIsAdmin = false;
+    if (role == 1 || role == 2) {
+        userIsAdmin = true;
+    }
+    userIsAuthorized = true;
     //si l'utilisateur est un admin ou l'utilisateur du compte, il peut supprimer
     if (userIsAdmin || userIsAuthorized) {
         sql.query('DELETE FROM user WHERE id=?', [userId], (error, results, fields) => {

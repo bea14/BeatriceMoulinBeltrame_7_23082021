@@ -13,7 +13,7 @@ userRouter.post('/signup', userCtrl.signup); //creation nouvel utilisateur
 userRouter.post('/login', userCtrl.login); //connexion utilisateur existant
 userRouter.get('/profile', userCtrl.getAllUsers); //affichage de tous les utilisateurs
 userRouter.get('/profile/:id', userCtrl.getProfile); //affichage du profil d'un utilisateur
-userRouter.put('/profile/:id', multer, userCtrl.updateProfile); //mise à jour du profil d'un utilisateur
+userRouter.patch('/profile/:id', multer, userCtrl.updateProfile); //mise à jour du profil d'un utilisateur
 userRouter.delete('/profile/:id', userCtrl.deleteProfile); //suppression d'un utilisateur
 
 module.exports = userRouter;
