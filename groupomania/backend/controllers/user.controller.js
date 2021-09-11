@@ -60,7 +60,7 @@ exports.signup = (req, res, next) => {
                     email: encryptEmail(req.body.email),
                     //email: req.body.email,
                     password: hash,
-                    avatar: req.body.avatar,//`${req.protocol}://${req.get("host")}/upload/${req.file.filename}`
+                    avatar: "http://localhost:3000/upload/default-avatar.jpg",
                     creationdate: req.body.creationdate,
                     updatedate: req.body.updatedate,
                     role: req.body.role,
@@ -196,6 +196,8 @@ exports.updateProfile = (req, res, next) => {
 
     });*/
     const updatedUser = req.body;
+    //on vérifie s'il y a un fichier multimedia, si oui on récupère et on crée le lien si non on enregistre null
+    updatedUser.avatar = req.file ? `${req.protocol}://${req.get("host")}/upload/${req.file.filename}` : null;
     // Requête de mise à jour
     sql.query('UPDATE user SET ? WHERE id=?', [updatedUser, userId], (error, results, fields) => {
         //si erreur message

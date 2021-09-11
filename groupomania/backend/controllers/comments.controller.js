@@ -82,7 +82,7 @@ exports.updateComment = (req, res,) => {
     });*/
     const updatedComment = req.body;
     //on met à jour dans la DB le commentaire
-    sql.query('UPDATE commments SET ? WHERE id=?', [updatedComment, commentId], (error, results, fields) => {
+    sql.query('UPDATE comments SET ? WHERE id=?', [updatedComment, commentId], (error, results, fields) => {
         if (error) {
             console.log(req.body);
             return res.status(500).json({ error });
