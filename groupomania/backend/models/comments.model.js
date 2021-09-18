@@ -5,6 +5,8 @@ const Comment = function(comment) {
     this.content = comment.content;
     this.creationdate = comment.creationdate;
     this.updatedate = comment.updatedate;
+    this.isreported = comment.isreported;
+    this.isreporteddate = comment.isreporteddate;
 }
     
 module.exports = Comment;
