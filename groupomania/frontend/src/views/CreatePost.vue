@@ -1,0 +1,229 @@
+<!--Page qui permet de créer un article. Prend titre, contenu, image et catégorie-->
+<template>
+  <div class="postcreate">
+    <h1>Création d'un nouvel article</h1>
+    <div class="postcreate-box">
+    <p>Vous avez plusieurs possibilités pour votre article :
+      <ul>
+        <li @click="toggleVisibility('post-create-textmedia')">Du texte avec ou sans image/video : cliquer ici</li>
+        <li @click="toggleVisibility('post-create-link')">Un lien internet : cliquer ici</li>
+        <li @click="toggleVisibility('post-create-media')">Une image seule ou une vidéo seule : cliquer ici</li>
+        <li>Un sondage (pas encore disponible)</li>
+      </ul>
+    </p>
+    <Bouton text="Annuler et retourner aux articles" @click="goToPage" class="submitButton" />
+    </div>
+    <div class="form" id="post-create-textmedia">
+      <ValidationObserver tag="form" class="formulaire" @submit.prevent="create">
+        <FormTextInput label="Titre : " name="titletextmedia" type="text" v-model="title" placeholder="Le titre de votre article "/>
+        <label for="tag">Choisissez une catégorie :</label>
+        <select v-model="selected" @change="changeTag($event)">          
+          <option value="" selected disabled>--Choisir une catégorie--</option>
+          <option v-for="tag in tags" :value="tag.text" :key="tag.value" :class="getCategorie(tag.name)">
+            {{ tag.text }}
+          </option>
+        </select>
+        <div class="image-upload">
+          <p>
+            <span v-if="!image">Cliquer pour choisir une image :</span>
+            <span v-else>{{ image.name }}</span>
+          </p>
+          <!--@change="fileChanged($event.target.name, $event.target.files)"-->
+        <input type="file" @change="this.fileChanged" accept="image/*,video/*,audio/*">               
+        <img :src="`${media_url}`">
+        </div>
+        <TextAreaInput label="Contenu : " name="contenttextmedia" v-model="content" placeholder="Votre contenu "/>
+        <button class="submitButton" >Créer le nouvel article</button>
+      </ValidationObserver>
+    </div>
+    <div class="form" id="post-create-link">
+      <ValidationObserver tag="form" class="formulaire" @submit.prevent="create">
+        <FormTextInput label="Titre (optionnel): " name="titlelink" type="text" v-model="title" placeholder="Le titre de votre article "/>
+        <label for="tag">Choisissez une catégorie :</label>
+        <select v-model="selected" @change="changeTag($event)">          
+          <option value="" selected disabled>--Choisir une catégorie--</option>
+          <option v-for="tag in tags" :value="tag.text" :key="tag.value" :class="getCategorie(tag.name)">
+            {{ tag.text }}
+          </option>
+        </select>
+         <FormTextInput label="Votre lien : " name="content" type="text" v-model="content" placeholder="Votre lien "/>
+        <button class="submitButton" >Créer le nouvel article</button>
+      </ValidationObserver>
+    </div>
+    <div class="form" id="post-create-media">
+      <ValidationObserver tag="form" class="formulaire" @submit.prevent="create">
+        <FormTextInput label="Titre (facultatif) : " name="titlemedia" type="text" v-model="title" placeholder="Le titre de votre article "/>
+        <label for="tag">Choisissez une catégorie (facultatif) :</label>
+        <select v-model="selected" @change="changeTag($event)">          
+          <option value="" selected disabled>--Choisir une catégorie--</option>
+          <option v-for="tag in tags" :value="tag.text" :key="tag.value" :class="getCategorie(tag.name)">
+            {{ tag.text }}
+          </option>
+        </select>
+        <div class="image-upload">
+          <p>
+            <span v-if="!image">Cliquer pour choisir une image :</span>
+            <span v-else>{{ image.name }}</span>
+          </p>
+          <!--@change="fileChanged($event.target.name, $event.target.files)"-->
+        <input type="file" @change="this.fileChanged" accept="image/*,video/*,audio/*">               
+        <img :src="`${media_url}`">
+        </div>
+        <button class="submitButton" >Créer le nouvel article</button>
+      </ValidationObserver>
+    </div>
+  </div>
+</template>
+
+<script>
+const axios = require("axios").default;
+import FormTextInput from "../components/forms/FormTextInput.vue";
+import TextAreaInput from "../components/forms/FormTextarea.vue";
+import Bouton from "../components/Bouton.vue";
+import { ValidationObserver } from "vee-validate";
+import router from "../router";
+
+export default {
+  name: "Createpost",
+  components: {
+    FormTextInput,
+    TextAreaInput,
+    Bouton,
+    ValidationObserver
+  },
+  data() {
+    return {
+      title: '',
+      content: '',
+      tag: '',
+      media_url: '',
+      isreported:'N',
+      error: null,
+      image: null,
+      imagePreview: null,
+      selected: "--Choisir une catégorie--",
+      tags: [
+        {text:'Environnement', value: 'Environnement'},
+        {text:'Science', value: 'Science'},
+        {text:'Technologie', value: 'Technologie'},
+        {text:'Actualités', value: 'Actualités'},
+        {text:'Humour', value: 'Humour'},
+        {text:'Au travail', value: 'Au travail'},
+        {text:'Divers', value: 'Divers'},
+        ],
+    }
+  },
+  methods: { 
+    goToPage() {
+      router.push("/Posts")
+    },
+    getCategorie(val){
+      const catactive = "cat_item cat_item_isactive"
+      const catinactive = "cat_item"
+      var categorie = val === this.selected ? catactive : catinactive;
+      return categorie;
+    },
+    changeTag (event) {
+      this.tag = event.target.value;      
+      this.selectedTag = event.target.options[event.target.option];
+    },
+    create() {
+      let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      const dataForm = new FormData(); 
+      //on vérifie si c'est un lien
+     /*let contenu="";
+      console.log (this.content.substring(0,4))
+      if (this.content.substring(0,4) == "http") {
+        contenu=`<a href="`+this.content+`">${this.content}</a>`  
+      } else contenu = this.content;*/
+      dataForm.append("title", this.title);
+     //dataForm.append("content", contenu);
+      dataForm.append("content", this.content);
+      dataForm.append("media_url", this.media_url);
+      dataForm.append("author", sessionStorage.getItem("userId"));
+      dataForm.append("creationdate", date);      
+      dataForm.append("updatedate", date);
+      dataForm.append("tag", this.tag);
+      dataForm.append("isreported", this.isreported);      
+      dataForm.append("isreporteddate", date);
+      if (this.file != "") {dataForm.append("media", this.file)};
+
+      console.log(dataForm);
+      if (this.file != "") console.log('file', this.file)
+      //console.log(this.image.name)
+      //console.log(media_url);
+      
+      const token = sessionStorage.getItem("token");      
+      axios
+      .post(`http://localhost:3000/api/topics/`, dataForm, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+      .then((response) => {        
+        console.log('WWWWWWWWWWWWWWWWW', response.data)
+        router.push("/Posts");
+      })
+      .catch((err) => {
+        console.log(err.response.data.errors[0].msg);
+      });
+    },
+    //fileChanged(filename, files) {
+    fileChanged(event) {
+      /*if (!files.length) {
+      return files
+      }
+      console.log(filename, files)
+      const formData = new FormData()
+      for (let i = 0; i < files.length; i++) {
+        formData.append(filename, files[i], files[i].name)
+      }
+      axios
+      .post(`http://localhost:3000/upload`, formData).then(
+        rsp => {
+          console.log(rsp)
+        }
+      )
+      .catch(err => {
+        console.log(err)
+      })*/
+      
+      this.file = event.target.files[0];
+    },
+    
+    toggleVisibility(el) {
+      var div = document.getElementById(el);
+      div.style.display = div.style.display == "block" ? "none" : "block";
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+@import "../assets/styles/utils/_variables.scss";
+.postcreate{
+  margin: 5rem auto;
+  border-radius: $border-radius-m;
+  box-shadow: $net-shadow;
+  background-color: white;
+  max-width: 48rem;
+  width: 100%;
+  .postcreate-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .submitButton {
+    margin-bottom: 0.5rem;
+  }
+}
+#post-create-textmedia {
+  display: none
+}
+#post-create-link {
+  display: none
+}
+#post-create-media {
+  display: none
+}
+</style>

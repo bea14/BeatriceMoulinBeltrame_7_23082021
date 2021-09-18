@@ -1,0 +1,114 @@
+<template>
+    <nav class="main-navigation">
+        <div class="nav-wrapper">
+            <p class="site-title"><a href="index.html">Béatrice Moulin Beltrame</a></p>
+            <input type="checkbox" id="menu-checkbox" class="menu-checkbox">
+            <label for="menu-checkbox" class="menu-toggle">&equiv; Menu</label>
+            <ul class="menu">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="index.html#competences">Competences</a></li>
+                <li><a href="index.html#portfolio">Portfolio</a></li>
+                <li><a href="index.html#experiences">Experiences</a></li>
+                <li><a href="index.html#formations">Formations</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div> 
+    </nav>
+</template>
+
+<script>
+
+</script>
+
+<style>
+    .nav-wrapper {    
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+
+.menu {
+    /*display: none;*/ /* le menu est cache par defaut */
+    flex-basis: 100%;
+    list-style: none;
+    margin: 0;
+    max-height: 0;
+    opacity: 0; /**/
+    overflow: hidden;
+    padding: 0 2em;
+    transition: margin .5s ease-in-out, max-height .5s ease-in-out, opacity .3s .1s ease-in-out;
+    visibility: hidden; /**/
+}
+
+.menu-checkbox:checked ~ .menu {
+    /*display: block;*/
+	margin: 1em 0;
+    max-height: 500px;
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-checkbox:checked + .menu {
+	margin: 1em 0;
+    max-height: 500px;
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-checkbox {
+	opacity: 0;
+	position: absolute;
+	top: -1000px;
+}
+
+.menu-checkbox:focus + .menu-toggle {
+    outline: #ae952e auto 5px;
+}
+
+.menu-toggle {
+    padding: .5em 1em;
+    display: inline-block;/**/
+}
+
+.menu li {
+    border-bottom: 1px solid #eee;
+}
+
+.menu li a {
+    display: inline-block;
+    padding: 0.5em 1em;
+    color: #fff;
+}
+
+.menu li a:hover {
+  background-color: #f4f4f4;
+  color: #333;
+}
+@media screen and (min-width: 65em) {
+    .menu {
+        flex-basis: auto;
+        margin: 0;
+        max-height: 1000px;
+        opacity: 1;
+        padding: 0;
+        visibility: visible;
+    }
+
+    .menu-toggle,
+    .menu-checkbox {
+        display: none;
+    }
+
+    .menu li {
+        border: none;
+        display: inline-block;
+    }
+
+	.menu li a {
+	    padding: .5em;
+	}
+
+}
+</style>

@@ -1,0 +1,33 @@
+//max size container of the website
+.max-container {
+    max-width: 1400px;
+    margin: auto;
+   }
+
+   //max size container of the website
+.max-container-articlepage {
+    max-width: 900px;
+    margin: auto;
+   }
+
+//comportment of pictures in their parent
+.img-size {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   
+}
+
+//alert message
+.alert-msg {
+    color: red;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+//small picture profile 
+.small-picture-profile {
+    width: 60px;
+    min-width: 60px;
+    height: 60px;
+    margin-right: 20px;
+}
