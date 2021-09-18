@@ -11,9 +11,9 @@ const multer = require("../middleware/multer-config");
 //Definition des routes
 userRouter.post('/signup', userCtrl.signup); //creation nouvel utilisateur
 userRouter.post('/login', userCtrl.login); //connexion utilisateur existant
-userRouter.get('/profile', userCtrl.getAllUsers); //affichage de tous les utilisateurs
-userRouter.get('/profile/:id', userCtrl.getProfile); //affichage du profil d'un utilisateur
-userRouter.patch('/profile/:id', multer, userCtrl.updateProfile); //mise à jour du profil d'un utilisateur
-userRouter.delete('/profile/:id', userCtrl.deleteProfile); //suppression d'un utilisateur
+userRouter.get('/profile', auth, userCtrl.getAllUsers); //affichage de tous les utilisateurs
+userRouter.get('/profile/:id', auth, userCtrl.getProfile); //affichage du profil d'un utilisateur
+userRouter.patch('/profile/:id', auth, multer, userCtrl.updateProfile); //mise à jour du profil d'un utilisateur
+userRouter.delete('/profile/:id', auth, userCtrl.deleteProfile); //suppression d'un utilisateur
 
 module.exports = userRouter;
