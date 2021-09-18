@@ -180,21 +180,6 @@ exports.updateProfile = (req, res, next) => {
     //on récupère l'id de l'utilisateur
     const userId = req.params.id;
     // on créé l'utilisateur d'après le modèle
-    /*const updatedUser = new User({    
-        lastname: req.body.lastname,
-        firstname: req.body.firstname,
-        pseudo: req.body.pseudo,
-        email: encryptEmail(req.body.email),
-        password: password,
-        sexe: req.body.sexe,
-        //On génère l'url de l'image par rapport à son nom de fichier
-        avatar: req.body.avatar,//`${req.protocol}://${req.get("host")}/upload/${req.file.filename}`,
-        //birthdate: req.body.birthdate,
-        bio: req.body.bio,
-        updatedate: req.body.updatedate,
-        role: req.body.role
-
-    });*/
     const updatedUser = req.body;
     //on vérifie s'il y a un fichier multimedia, si oui on récupère et on crée le lien si non on enregistre null
     updatedUser.avatar = req.file ? `${req.protocol}://${req.get("host")}/upload/${req.file.filename}` : null;
@@ -218,36 +203,20 @@ exports.updateProfile = (req, res, next) => {
 exports.deleteProfile = (req, res, next) => {
     //on récupère l'id de l'utilisateur à supprimer
     const userId = req.params.id;
-    const role = req.body.role;
-    let userIsAdmin = false;
-    if (role == 1 || role == 2) {
-        userIsAdmin = true;
-    }
-    userIsAuthorized = true;
-    //si l'utilisateur est un admin ou l'utilisateur du compte, il peut supprimer
-    if (userIsAdmin || userIsAuthorized) {
-        sql.query('DELETE FROM user WHERE id=?', [userId], (error, results, fields) => {
-            //erreur donc message
-            if (error) {
-                return res.status(500).json({ error });
-            } else if (results.length === 0) {
-                //resultat vide donc message
-                return res.status(401).json({ message: 'utilisateur inexistant' });
-            } else {
-                //Ok donc message
-                return res.status(200).json({ user: results[0], message: 'utilisateur supprimé' });
-            }
-        });
-    }
-    else {
-        //pas autorisé à faire cette requete car pas admin ou pas le possesseur du compte
-        return res.status(401).json({
-            error: true,
-            message: 'Vous n\'êtes pas autorisé à faire cette demande' 
-        });
-    }
+    sql.query('DELETE FROM user WHERE id=?', [userId], (error, results, fields) => {
+        //erreur donc message
+        if (error) {
+            return res.status(500).json({ error });
+        } else if (results.length === 0) {
+            //resultat vide donc message
+            return res.status(401).json({ message: 'utilisateur inexistant' });
+        } else {
+            //Ok donc message
+            return res.status(200).json({ user: results[0], message: 'utilisateur supprimé' });
+        }
+    });
     //s'il y a un avatar, on le supprime aussi
-    if(req.body.avatar) {
+    /*if(req.body.avatar) {
         fs.unlinkSync(`upload/${req.body.avatar}`);
-    }
+    }*/
 };

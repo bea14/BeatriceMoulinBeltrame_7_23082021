@@ -30,7 +30,7 @@ exports.createComment = (req, res, next) => {
 //Affichage de tous les commentaires d'un post, on récupère le pseudo de l'auteur
 exports.getAllComments = (req, res,) => {
     const postId = req.params.postId;
-    sql.query('SELECT comments.id, comments.author, comments.topic, comments.content,DATE_FORMAT(comments.updatedate, "%d/%m/%Y") AS comment_date_fr , user.pseudo, user.avatar FROM comments INNER JOIN user ON comments.author = user.id  WHERE topic=? ORDER BY comments.id DESC ', [postId], function (error, results, fields) {
+    sql.query('SELECT comments.id, comments.author, comments.topic, comments.content,DATE_FORMAT(comments.updatedate, "%d/%m/%Y") AS comment_date_fr, comments.isreported, DATE_FORMAT(comments.isreporteddate, "%d/%m/%Y") AS comment_reportingdate_fr, user.pseudo, user.avatar FROM comments INNER JOIN user ON comments.author = user.id  WHERE topic=? ORDER BY comments.id', [postId], function (error, results, fields) {
         if (error) {
             console.error(error);
             return res.status(500).json({ error });
@@ -73,13 +73,7 @@ exports.getAllCommentsForUser = (req, res,) => {
 exports.updateComment = (req, res,) => {
     //On récupère l'id du commentaire
     const commentId = req.params.commentId; 
-    //on créé le commentaire mis à jour d'après le modèle en ne mettant que les champs modifiables/obligatoires
-    /*const updatedComment = new Comment({    
-        content: req.body.content,
-        author: req.body.author,
-        topic: req.body.topic,
-        updatedate: req.body.updatedate
-    });*/
+    //on récupère les données envoyées par le front
     const updatedComment = req.body;
     //on met à jour dans la DB le commentaire
     sql.query('UPDATE comments SET ? WHERE id=?', [updatedComment, commentId], (error, results, fields) => {
@@ -100,14 +94,12 @@ exports.deleteComment = (req, res,) => {
     const commentId = req.params.commentId;
     //on recupère l'id de l'utilisateur
     const userId = req.body.userId;
-    //if (userIsAdmin || userIsAuthorized) {
-        sql.query('DELETE FROM comments WHERE id=?', [commentId], (error, results, fields) => {
-            if (error) {
-                return res.status(500).json({ error });
-            }
-            return res.status(200).json({ message: 'commentaire supprimé' });
-        })
-    //}
+    sql.query('DELETE FROM comments WHERE id=?', [commentId], (error, results, fields) => {
+        if (error) {
+            return res.status(500).json({ error });
+        }
+        return res.status(200).json({ message: 'commentaire supprimé' });
+    })
 }
 
 //Ajout des like ou dislike d'un commentaire A FIARE
