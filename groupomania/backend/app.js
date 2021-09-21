@@ -41,12 +41,12 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 //app.use(express.urlencoded({ extended: true }));
 
-//routes
+
 //express doit gérer la ressource telechargée de manière statique
 app.use("/upload", express.static(path.join(__dirname, "upload")));
-//Sert les routes concernant les sauces pour toute demande vers le endpoint /api/users
+//routes concernant les utilisateurs pour toute demande vers le endpoint /api/users
 app.use("/api/users", userRoutes);
-//Sert les routes concernant les utilisateurs pour toute demande vers le endpoint /api/topics
+//routes concernant les posts et commentaires pour toute demande vers le endpoint /api/topics
 app.use("/api/topics", postRoutes, commentRoutes);
 
 module.exports = app;
