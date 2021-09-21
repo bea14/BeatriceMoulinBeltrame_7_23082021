@@ -3,7 +3,7 @@ const sql = require("../config/db.config");
 //Modèle des posts
 const Post = require("../models/posts.model");
 //Modèle des commentaires
-const Comment = require("../models/comments.model");
+const Vote = require("../models/votes.model");
 //Gestion des fichiers
 const fs = require('fs');
 
@@ -120,7 +120,17 @@ exports.deletePost = (req, res, next) => {
 exports.likeDislikePost = (req, res,next) => {
     //on récupère l'id du post à supprimer
     const postId = req.params.id;
-    sql.query('INSERT INTO topicsvotes SET ? WHERE topic=?', [likedislike, postId], (error, results, fields) => {
+    // on récupère les données envoyées par le front
+    let likedislikevote = req.body;
+    //let vote = req.body.likedislike;
+    const userId = req.body.user;
+    const newVote = new Vote({
+        //Utilise l'opérateur spread pour copier les infos du corps de la requête
+        ...likedislikevote
+    });
+    console.log(likedislikevote)
+    console.log(newVote)
+    sql.query('UPDATE topicsvotes SET ?  WHERE user=? and topic=?', [newVote, userId, postId], (error, results, fields) => {
       if (error) {
         return res.status(500).json({ error });
       }
