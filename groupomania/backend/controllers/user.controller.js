@@ -126,15 +126,17 @@ exports.login = (req, res, next) => {
                 if (!valid) {
                   return res.status(401).json({ error: "Mot de passe incorrect !" });
                 }
-                //on récupère l'id, le pseudo et le rôle
+                //on récupère l'id, le pseudo, l'avatar et le rôle
                 const userId = results[0].id;
-                const pseudo = results[0].pseudo;
+                const pseudo = results[0].pseudo;                
+                const avatar = results[0].avatar;
                 const role = results[0].role;
                 //si le mot de passe correspond alors création d'un token d'identification
                 res.status(200).json({
                     message: 'Vous êtes maintenant connecté',
                     userId: userId,
                     pseudo: pseudo,
+                    avatar: avatar,
                     role: role,
                     token: jwt.sign(
                     //id utilisateur et role
@@ -158,6 +160,11 @@ exports.getAllUsers = (req, res, next) => {
         if (error) {
           return res.status(400).json(error)
         }
+         // on decrypte l'email pour l'afficher en clair 
+         //emailCrypted = results.email;
+         //emailDecrypted = decryptEmail(emailCrypted).toString(CryptoJS.enc.Utf8);
+         // on retourne la reponse
+         //return res.status(200).json({ user: results, email : {emailCrypted, emailDecrypted} });
         return res.status(200).json({ results })
       }
     )

@@ -14,6 +14,6 @@ commentRouter.get('/:postId/comments',auth, commentCtrl.getAllComments); //affic
 commentRouter.get('/:postId/comments/:commentId',auth, commentCtrl.getOneComment); //affichage d'un commentaire ayant l'id id
 commentRouter.patch("/:postId/comments/:commentId", auth, commentCtrl.updateComment); //mise à jour d'un commentaire
 commentRouter.delete("/:postId/comments/:commentId", auth, commentCtrl.deleteComment); //suppression d'un commentaire
-commentRouter.post("/:postId/comments/:commentId/like", auth, commentCtrl.likedislikeComment); //like ou dislike d'un commentaire
+//commentRouter.post("/:postId/comments/:commentId/like", auth, commentCtrl.likedislikeComment); //like ou dislike d'un commentaire
 
 module.exports = commentRouter;
