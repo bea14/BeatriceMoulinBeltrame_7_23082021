@@ -1,25 +1,27 @@
+// variables.scss
 //colors
-$primary-color: #FD2D01;
+$primary-color: #FD2D06;
 $secondary-color: #091F43;
-$tertiary-color: #3565B4;
+$tertiary-color: #30475E;
+$quaternary-color: #2454A3;
+$dark-color: #222831;
 
-//grey
 $bg-body: #e8e8e8;
 
-//typography
-$font-family-sans-serif: 'Roboto', Helvetica, Arial, sans-serif;
-$font-family-serif: Georgia, serif;
+$shadow-color: rgba(0, 0, 0, 0.25);
+$shadow-color-hover:rgba(0, 0, 0, 0.5);
 
-$font-weight-thin: 100;
-$font-weight-light: 300;
-$font-weight-regular: 400;
-$font-weight-bold: 800;
-
+$button-shadow-color: rgba(163,163,163,0.2);
+$button-shadow-hover-color: rgba(163,163,163,0.6);
 //shadow
-$net-shadow: 0 2px 5px rgb(170, 170, 170);
+$shadow: 0 2px 5px rgb(170, 170, 170);
 $blur-shadow: 0 10px 10px rgb(230, 230, 230);
-$dark-shadow: 0 5px 15px rgb(170, 170, 170);
-$very-dark-shadow: 0 5px 15px rgb(120, 120, 120);
+$dark-shadow: 0 5px 15px rgb(120, 120, 120);
+
+// Links
+$link-decoration: underline;
+$link-decoration-hover: underline;
+$link-decoration-none: none;
 
 //padding
 $padding-xs: 5px;
@@ -29,13 +31,11 @@ $padding-l: 30px;
 $padding-xl: 40px;
 
 //border-radius
-$border-radius-xs: 5px;
-$border-radius-s: 10px;
-$border-radius-m: 20px;
-$border-radius-l: 30px;
+$border-radius-none: 0;
+$border-radius-xs: 0.5rem;
+$border-radius-s: 1rem;
+$border-radius-m: 2rem;
+$border-radius-l: 6rem;
 $border-radius-xl: 100%;
+$border-radius-circle: 50%;
 
-//breakpoint
-$width-small: 400px;
-$width-medium: 760px;
-$width-large: 1200px;

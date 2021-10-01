@@ -1,0 +1,22 @@
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: $secondary-color;
+    color: white;
+    margin: 1rem 0;
+    height: 5rem;
+    font-size: 0.8rem;
+    div {
+      margin: 0.5rem 0;
+      a {
+        text-decoration: none;
+        color: white;
+      }
+    }
+    @media screen and (min-width: 768px) {
+      flex-direction: row;
+      font-size: 1rem;
+    }
+  }

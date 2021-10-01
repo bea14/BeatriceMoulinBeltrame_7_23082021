@@ -1,0 +1,7 @@
+.userboard {
+    margin: 12rem auto 2rem auto;
+    max-width: 800px;
+    @media screen and (min-width: 767px){
+      margin: 5rem auto 2rem auto;
+    }
+  }

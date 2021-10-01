@@ -1,0 +1,65 @@
+.table-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1rem;
+  color: $tertiary-color;
+  h2 {
+      margin-top: 0;
+      margin-left: 10px;
+  }
+}
+
+.table-body {
+  background-color: white;
+  border-radius: $border-radius-m;
+  padding: 0.2rem;
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  .table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+  }
+}
+
+.table-striped tbody tr:nth-last-of-type(odd) {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.table-users tr td {
+  text-align: center;
+  img {
+    width: 40px;
+  }
+}
+
+.table-posts tr td{
+  max-width: 220px; 
+  word-wrap: break-word;
+  text-align: center;  
+  word-break: break-word;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.red {
+    background-color:#FC6161!important;
+}
+
+.alert-reporting {
+  background-color: $quaternary-color;
+  color: white;
+  text-align: center;
+  padding: 0 0 0.5rem 0;
+  margin-bottom: 0.5rem;
+  span {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 0.2rem;
+  }
+  }

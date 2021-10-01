@@ -1,0 +1,41 @@
+.profile{
+    margin: 12rem auto 2rem auto;
+    border-radius: $border-radius-m;
+    box-shadow: $shadow;
+    background-color: white;
+    max-width: 800px;
+    @media screen and (min-width: 767px){
+      margin: 5rem auto 2rem auto;
+    }
+    img {
+        width: 100px;
+    }
+    #image-upload {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+    .avatarsPreview {
+        width: 80px;
+        img {
+          width: 80px;
+        }
+    }
+    #drop-region {        
+        margin-bottom: 1rem;
+    }
+    .form-radio {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        label {
+            margin: 0 0.2rem;
+        }
+        @media screen and (min-width: 375px){            
+            flex-direction: row;
+            align-items: unset;
+        }
+    }
+}
