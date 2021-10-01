@@ -77,12 +77,8 @@ exports.getOnePost = (req, res, next) => {
 exports.updatePost = (req, res, next) => {
     //on récupère l'id du post à mettre à jour
     const postId = req.params.id;
-    // on récupère les données envoyées par le front
-    let updatedPost = req.body;
-    //on vérifie s'il y a un fichier multimedia, si oui on récupère le lien si non on enregistre null
-    updatedPost.media_url = req.file ? `${req.protocol}://${req.get("host")}/upload/${req.file.filename}`: null;
-    console.log('reqfile',req.file) 
-    console.log('media',updatedPost.media_url)
+    //on vérifie s'il y a un fichier multimedia, si oui on récupère le lien si non on recupère juste la requête
+    const updatedPost = req.file ? {...req.body, media_url:`${req.protocol}://${req.get("host")}/upload/${req.file.filename}`}:{...req.body};
     //on met à jour dans la DB le post
     sql.query('UPDATE topics SET ? WHERE id=?', [updatedPost, postId], (error, results, fields) => {
         if (error) {
@@ -120,17 +116,11 @@ exports.deletePost = (req, res, next) => {
 exports.likeDislikePost = (req, res,next) => {
     //on récupère l'id du post à supprimer
     const postId = req.params.id;
-    // on récupère les données envoyées par le front
-    let likedislikevote = req.body;
-    //let vote = req.body.likedislike;
+    // on récupère les données envoyées par le front    
+    let voteData = req.body;
+    let vote = voteData.likedislike;
     const userId = req.body.user;
-    const newVote = new Vote({
-        //Utilise l'opérateur spread pour copier les infos du corps de la requête
-        ...likedislikevote
-    });
-    console.log(likedislikevote)
-    console.log(newVote)
-    sql.query('UPDATE topicsvotes SET ?  WHERE user=? and topic=?', [newVote, userId, postId], (error, results, fields) => {
+    sql.query('INSERT INTO topicsvotes (likedislike, user, topic) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `likedislike`=?', [vote,userId,postId,vote], (error, results, fields) => {
       if (error) {
         return res.status(500).json({ error });
       }
