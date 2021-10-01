@@ -10,18 +10,13 @@
             {{ tag.text }}
           </option>
         </select>
-    </div>-->
-    <!--Zone de recherche par mots clés-->
-    <!--<div class="items">
-      <input type="text" v-model="searchTerm" placeholder="Search Posts" class="search-input" />
-    </div>-->
+    </div>-->   
     <!--Tri sur les dates des posts-->
     <div class="items">
-      <label for="tag">Trier :</label>
-      <!--<select name="triDate" v-model="selectedsorting" @change="changeTag($event)"> -->
-      <select name="triDate" v-model="selectedsorting" @change="changeTag()">         
+      <label for="tag">Trier: </label>
+      <select name="triDate" v-model="selectedsorting" @change="changeTag()" aria-label="tri par date">         
         <option value="" selected disabled>--Tri--</option>
-        <option v-for="sort in sorts" :value="sort.value" :key="sort.value" :class="getSorting(sort.name)">
+        <option v-for="sort in sorts" :value="sort.value" :key="sort.value">
           {{ sort.text }}
         </option>
       </select>
@@ -33,8 +28,7 @@
 export default {
   data() {
     return {
-      innerValue: "", 
-      /*searchTerm: "",*/
+      innerValue: "",
       selectedsorting: "--Les plus récents--",
       sorts: [
         {text:'Les plus récents', value: 'Desc'},
@@ -56,36 +50,11 @@ export default {
     };
   },
   methods: {
-    /*getCategorie(val){
-      const catactive = "cat_item cat_item_isactive"
-      const catinactive = "cat_item"
-      var categorie = val === this.selected ? catactive : catinactive;
-      return categorie;
-    },*/
-    getSorting(val) {
-      const sortactive = "cat_item cat_item_isactive"
-      const sortinactive = "cat_item"
-      var sorting = val === this.selected ? sortactive : sortinactive;
-      return sorting;
-    },
+    //permet de récupérer l'option selectionnée et de l'envoyer au parent
     changeTag () {
-      //this.tag = event.target.value;
-      //this.selectedTag = event.target.options[event.target.option];
       let sortingDate = this.selectedsorting;
-      //return sortingDate   
-      this.$emit("sorting-date", sortingDate);
+      this.$emit("sortingdate", sortingDate);
     },
   },
 }
 </script>
-
-<style lang="scss">
-.filterposts{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  @media screen and (min-width: 1024px){
-    flex-direction: row;
-  }
-}
-</style>

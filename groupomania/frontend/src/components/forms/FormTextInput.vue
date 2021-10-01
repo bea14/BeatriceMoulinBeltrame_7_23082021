@@ -17,7 +17,6 @@
     </label>
     <input
       :class="{ 'border-gray-700': !errors[0], 'border-red-600': errors[0], 'has-value': hasValue }"
-      :id="name"
       :type="type"
       :placeholder="placeholder"
       v-model="innerValue"
@@ -75,11 +74,7 @@ export default {
           "email"
         ].includes(value);
       }
-    },
-    /*value: {
-      type: null,
-      default: ""
-    }*/    
+    },   
     value: {
       type: String,
       default: "",
@@ -93,14 +88,6 @@ export default {
       return !!this.innerValue;
     },
   },
-  /*method: {
-    innerValue() {
-      let name = this.name;
-      let value = this.innerValue;
-      let inputVal = {name,value};
-      this.$emit("input", inputVal);
-    }
-  },*/
   watch: {
     innerValue(value) {
       this.$emit("input", value);
@@ -118,37 +105,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-@import "../../assets/styles/main.scss";
-.FormTextInput {
-  padding-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
-  input {
-    border-radius: $border-radius-s;
-    line-height: 1.5rem;
-    border-width: 1px;
-    font-size: 1rem;
-    padding: 0.5rem 0.75rem;
-    background-color: $bg-body;
-    &.border-gray-700 { border-color: #4a5568; }
-    &.border-gray-600 { border-color: #718096; }
-    &.has-value,
-    &:focus {
-      outline: none;
-    }
-  }
-  label {
-    padding-bottom: 0.5rem;
-   &.text-gray-700 {color: #4a5568;} 
-    &.text-red-600 { color: #e53e3e; }
-    input.has-value ~ label,
-    input:focus ~ label {
-      font-size: 0.6rem;
-      margin-top: 0;
-      transition: all 0.2s ease-in-out;
-    } 
-  }
-}
-</style>

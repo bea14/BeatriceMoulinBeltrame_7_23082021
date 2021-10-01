@@ -1,159 +1,93 @@
 <template>
-  <ValidationProvider
-    class="FormTextInput"
-    tag="div"
-    :vid="vid"
-    :rules="rules"
-    :name="name || label"
-    v-slot="{ errors, required, ariaInput, ariaMsg }"
+  <div
+    class="FormDate"
+    @keyup.capture="updateValue"
   >
-    <label
-      @click="$refs.input.focus()"
-      :for="name"
-      :class="{ 'text-gray-700': !errors[0], 'text-red-600': errors[0] }"
-    >
-      <span>{{ label || name }}</span>
-      <span>{{ required ? ' (obligatoire)' : '' }}</span>
-    </label>
     <input
-      :class="{ 'border-gray-700': !errors[0], 'border-red-600': errors[0], 'has-value': hasValue }"
-      :id="name"
-      :type="type"
-      :placeholder="placeholder"
-      v-model="innerValue"
-      ref="input"
-      v-bind="ariaInput"
-      value="innerValue"
-    >
-    
+      v-if="showDay"
+      ref="day"
+      v-model="day"
+      class="FormDate__input FormDate__input--day"
+      type="number"
+      placeholder= "dd"
+      @input="updateDay"
+      @blur="day = day.padStart(2, 0)">
     <span
-      v-bind="ariaMsg"
-      v-if="errors[0]"
-    >{{ errors[0] }}</span>
-  </ValidationProvider>
+      v-if="showDay && showMonth"
+      class="FormDate__divider"
+    >/</span>
+    <input
+      v-if="showMonth"
+      ref="month"
+      v-model="month"
+      class="FormDate__input FormDate__input--month"
+      type="number"
+      placeholder= "mm"
+      @input="updateMonth"
+      @blur="month = month.padStart(2, 0)">
+    <span
+      v-if="showYear && (showDay || showMonth)"
+      class="FormDate__divider"
+    >/</span>
+    <input
+      v-if="showYear"
+      ref="year"
+      v-model="year"
+      class="FormDate__input FormDate__input--year"
+      type="number"
+      placeholder= "yyyy"
+      @blur="year = year.padStart(4, 0)">
+  </div>
 </template>
 
 <script>
-import { ValidationProvider } from "vee-validate";
-
 export default {
-  name: "FormTextInput",
-  components: {
-    ValidationProvider
-  },
+  name: "FormDate",
   props: {
-    vid: {
-      type: String,
-      default: undefined
+    showDay: {
+      type: Boolean,
+      default: true,
     },
-    name: {
-      type: String,
-      default: ""
+    showMonth: {
+      type: Boolean,
+      default: true,
     },
-    label: {
-      type: String,
-      default: ""
-    },
-    rules: {
-      type: [Object, String],
-      default: ""
-    },
-    placeholder: {
-      type: String,
-      default: ""
-    },
-    type: {
-      type: String,
-      default: "text",
-      validator(value) {
-        return [
-          "url",
-          "text",
-          "password",
-          "tel",
-          "search",
-          "number",
-          "email",
-          "date"
-        ].includes(value);
-      }
-    },
-    /*value: {
-      type: null,
-      default: ""
-    }*/    
-    value: {
-      type: String,
-      default: "",
+    showYear: {
+      type: Boolean,
+      default: true,
     },
   },
-  data: () => ({
-    innerValue: "",
-  }),
-  computed: {
-    hasValue() {
-      return !!this.innerValue;
+   data() {
+    return {
+      day: `${this.value ? new Date(this.value).getDate() : ''}`,
+      month: `${this.value ? new Date(this.value).getMonth() + 1 : ''}`,
+      year: `${this.value ? new Date(this.value).getFullYear(): ''}`,
+    };
+  },
+  methods: {
+    updateDay() {
+      //on vérifie que valeur non vide ou pas inférieure à 4 avant de passer à la suite
+      if (!this.day.length || parseInt(this.day, 10) < 4) return;
+      if (this.showMonth) this.$refs.month.select();
+      else if (this.showYear) this.$refs.year.select();
+    },
+    updateMonth() {
+      //on vérifie que valeur non vide ou pas inférieure à 2 avant de passer à la suite
+      if (!this.month.length || parseInt(this.month, 10) < 2) return;
+      if (this.showYear) this.$refs.year.select();
+    },
+    // Fonction qui sert à convertir les jours, mois et années en timestamp qui sera emit
+    updateValue() {
+      const timestamp = Date.parse(`${this.year.padStart(4, 0)}-${this.month}-${this.day}`);
+      if (Number.isNaN(timestamp)) return;
+      this.$emit('input', timestamp);
     },
   },
-  /*method: {
-    innerValue() {
-      let name = this.name;
-      let value = this.innerValue;
-      let inputVal = {name,value};
-      this.$emit("input", inputVal);
-    }
-  },*/
   watch: {
-    innerValue(value) {
-      this.$emit("input", value);
+    //on vérifie qu'il n'y a pas plus de 4 chiffres pour l'année
+    year(current, prev) {
+      if (current > 9999) this.year = prev;
     },
-    value(val) {
-      if (val !== this.innerValue) {
-        this.innerValue = val;
-      }
-    }
   },
-  created() {
-    if (this.value) {
-      this.innerValue = this.value;
-    }
-  }
-};
+}
 </script>
-
-<style lang="scss" scoped>
-@import "../../assets/styles/main.scss";
-.FormTextInput {
-  padding-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-  input {
-    border-radius: $border-radius-s;
-      margin-top: 0.25rem;
-      line-height: 1.5rem;
-      border-width: 1px;
-      font-size: 1rem;
-      padding: 0.5rem 0.75rem;
-      background-color: $bg-body;
-      &.border-gray-700 { border-color: #4a5568; }
-      &.border-gray-600 { border-color: #718096; }
-
-    &.has-value,
-    &:focus {
-      outline: none;
-    }
-  }
-
-  label {
-   padding-bottom: 0.5rem;
-   &.text-gray-700 {color: #4a5568;} 
-    &.text-red-600 { color: #e53e3e; }
-  input.has-value ~ label,
-  input:focus ~ label {
-    font-size: 0.6rem;
-    margin-top: 0;
-    transition: all 0.2s ease-in-out;
-  }
-}
-}
-</style>

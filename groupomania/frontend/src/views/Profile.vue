@@ -1,56 +1,73 @@
 <template>
-  <div class="profile">
-    <h1>Profil {{ userRole }} de {{ pseudo }}</h1>
-    <h2>Compte créé le {{ user.user_creationdate_fr }}</h2>
-    <div class="form">
-      <ValidationObserver v-slot="{ invalid }" tag="form" class="formulaire" @submit.prevent="updateUser">
-        <FormTextInput label="Nom :" name="lastname" type="text" v-model="user.lastname" placeholder="Votre nom "/>
-        <FormTextInput label="Prénom :" name="firstname" type="text" v-model="user.firstname" placeholder="Votre prénom "/>
-        <FormTextInput label="Pseudo :" name="pseudo" type="text" v-model="user.pseudo" placeholder="Votre pseudo"/>
-        <FormTextInput label="Email : (not visible for the moment)" name="email" v-model="user.email" placeholder="Votre email"/>
-        <FormTextInput rules="min:6" label="Mot de passe :(not visible for the moment)" name="password" v-model="user.password" placeholder="Votre mot de passe"/>
-        <!--<FormCheckBox name="Masculin" type="radio" v-model="user.sexe" value="M "/>Masculin
-        <FormCheckBox name="Feminin" type="radio" v-model="user.sexe" value="F "/>Féminin
-        <FormCheckBox name="Autre" type="radio" v-model="user.sexe" value="A "/>Autre--->
-        <span>Votre avatar : <img :src="`${user.avatar}`" alt="Avatar utilisateur"></span> 
-        
-        <input type="file" id="fileElem" multiple accept="image/*" style="display:none" onchange="handleFiles(this.files)">
-        <a href="#" id="fileSelect">Sélectionnez des fichiers</a>
-        <div id="fileList">
-          <p>Aucun fichier sélectionné !</p>
+  <div class="maincontainer">
+    <Header @gotohome="path = '/Posts'"/>
+    <div class="profile">
+      <h1>Profil {{ userRole }} de {{ pseudo }}</h1>
+      <h2>Compte créé le {{ user.user_creationdate_fr }}</h2>
+      <div class="form">
+        <!-- @submit.prevent="avatarChanged(user.avatar);updateUser"-->
+        <ValidationObserver v-slot="{ invalid }" tag="form" class="formulaire" @submit.prevent="updateUser">
+          <FormTextInput label="Nom :" name="lastname" type="text" v-model="user.lastname" placeholder="Votre nom "/>
+          <FormTextInput label="Prénom :" name="firstname" type="text" v-model="user.firstname" placeholder="Votre prénom "/>
+          <FormTextInput label="Pseudo :" name="pseudo" type="text" v-model="user.pseudo" placeholder="Votre pseudo"/>
+          <FormTextInput label="Email : " name="email" v-model="user.email" placeholder="Votre email"/><!--
+          <FormTextInput rules="min:6" label="Mot de passe :" name="password" v-model="user.password" placeholder="Votre mot de passe"/>-->
+        <div class="form-radio">
+            <label>Votre sexe :</label>
+            <FormRadio label="Masculin" name="Masculin" type="radio" v-model="user.sexe" v_value="M "/>Masculin
+            <FormRadio label="Feminin" name="Feminin" type="radio" v-model="user.sexe" v_value="F "/>Féminin
+            <FormRadio label="Autre" name="Autre" type="radio" v-model="user.sexe" v_value="A "/>Autre
         </div>
-        
-        <p>
-          <span >Cliquer pour choisir un avatar :</span>
-        </p>
-        <div id="image-upload">
-          <div v-for="avatar in Avatars" :key="avatar.name" :value="avatar.img" class="avatarsPreview" @click="saveAvatar(avatar.img)" @change="fileChanged($event)">
-            <img :src="`${avatar.img}`" alt="image d'un avatar">
+          <span>Avatar : <img :src="`${avatar}`" alt="Avatar utilisateur"></span> 
+          <p>
+            <span >Cliquer pour choisir un autre avatar :</span>
+          </p>
+          <div id="image-upload" >          
+            <input type="file" @change="fileChanged" accept="image/*,video/*,audio/*" />
           </div>
-        </div>     
-        <!--<DateInput label="Date de naissance" name="birthdate" type="date" v-model="user.birthdate" placeholder="Votre date de naissance "/>-->     
-        <TextAreaInput label="Votre histoire :" name="bio" v-model="user.bio" placeholder="Votre histoire "/>
-        <button :disabled="invalid" class="submitButton" >Mettre à jour après modifications</button>
-      </ValidationObserver>
-      <div class="boutons">
-      <Bouton @click="goToPage()" text="Valider et aller à la page principale" class="submitButton" />
-      <Bouton text="Supprimer le compte" @click="$refs.modaleSuppression.openModal()" class="submitButton" />
-      <Modal ref="modaleSuppression">
-        <template v-slot:header>
-          <h1>Suppression du compte</h1>
-        </template>
-        <template v-slot:body>
-          <p>Etes-vous sûr(e) de vouloir supprimer ce compte?</p>
-          <p>Cette opération est irréversible.</p>
-          <p>Cliquez sur Confirmer pour confirmer la suppression et sur Annuler pour annuler la suppression</p>
-        </template>
-        <template v-slot:footer>
-          <div>            
-            <Bouton @click="deleteUser()" text="Confirmer" />      
-            <Bouton @click="$refs.modaleSuppression.closeModal()" text="Annuler" />
+          <!--Container pour le drag and drop-->
+          <div id="drop-region" class="container" v-cloak @drop.prevent="addFile" @dragover.prevent>
+            <h4 style="width: 250px;height: 150px;border: 2px dotted gray">ou placez votre avatar ici
+              <li v-for="(file,id) in files" :key="id" class="list-group-item mb-3 border-top">
+                {{ file.name }}
+                <button @click="removeFile(file)">Remove</button>
+              </li>
+            </h4>    
           </div>
-        </template>
-      </Modal>
+          <label for="birthdate">Date de naissance :</label>
+          <div v-if="user.birthdate">
+            {{ user.birthdate.substr(8, 2) }}/{{ user.birthdate.substr(5, 2) }}/{{ user.birthdate.substr(0, 4) }}
+          </div>
+          <div v-else>
+            <DateInput 
+              label="Date de naissance"
+              name="birthdate"
+              v-model="user.birthdate"
+            />
+          </div>
+          <TextAreaInput label="Ce que vous avez envie de raconter sur vous :" name="bio" v-model="user.bio" placeholder="Ce que vous avez envie de raconter sur vous "/>
+          <button :disabled="invalid" class="submitButton" >Mettre à jour</button>
+        </ValidationObserver>
+        <div class="boutons">
+        <Bouton @click="goToPage()" text="Retourner à la page principale" class="submitButton" />
+        <Bouton text="Supprimer le compte" @click="$refs.modaleSuppression.openModal()" class="submitButton" />
+        <Modal ref="modaleSuppression">
+          <template v-slot:header>
+            <h1>Suppression du compte</h1>
+          </template>
+          <template v-slot:body>
+            <p>Etes-vous sûr(e) de vouloir supprimer ce compte?</p>
+            <p>Cette opération est irréversible.</p>
+            <p>Cliquez sur Confirmer pour confirmer la suppression et sur Annuler pour annuler la suppression</p>
+          </template>
+          <template v-slot:footer>
+            <div>            
+              <Bouton @click="deleteUser()" text="Confirmer" />      
+              <Bouton @click="$refs.modaleSuppression.closeModal()" text="Annuler" />
+            </div>
+          </template>
+        </Modal>
+        </div>
       </div>
     </div>
   </div>
@@ -58,10 +75,11 @@
     
 <script>
 const axios = require("axios").default;
+import Header from "../components/layout/LayoutHeader.vue";
 import FormTextInput from "../components/forms/FormTextInput.vue";
 import TextAreaInput from "../components/forms/FormTextarea.vue";
-//import FormCheckBox from '../components/forms/FormCheckbox.vue';
-//import DateInput from "../components/forms/FormDate.vue";
+import FormRadio from '../components/forms/FormRadio.vue';
+import DateInput from "../components/forms/FormDate.vue";
 import Bouton from "../components/Bouton.vue";
 import Modal from "../components/modal.vue";
 import router from "../router";
@@ -70,35 +88,24 @@ import { ValidationObserver } from "vee-validate";
 export default {
   name: "profile",
   components: {
+    Header,
     ValidationObserver,
     FormTextInput,
     TextAreaInput,
-    //DateInput,
-    //FormCheckBox,
+    DateInput,
+    FormRadio,
     Bouton,
     Modal
   },
   data () {     
     const pseudo = sessionStorage.getItem('pseudo') || 0;
-    const role = sessionStorage.getItem('role') || 0;
-    let userRole ="";
-    if (role == 0) {
-    userRole = "membre";
-    console.log('role',userRole)
-    } 
-    else if (role == 1) {
-    userRole = "modérateur";
-    console.log('role',userRole)
-    }      
-    else if (role == 2) {
-    userRole = "administrateur"
-    console.log('role',userRole)
-    }
+    const avatar = sessionStorage.getItem('avatar') || 0;
     return {
       pseudo,
-      userRole,
+      avatar,
       user: sessionStorage.getItem("user"),
       role: "0",
+      files:[],
       Avatars: [
         {name:'avatar1', img: 'http://localhost:3000/upload/Avatars/avatar1.jpg'},
         {name:'avatar2', img: 'http://localhost:3000/upload/Avatars/avatar2.png'},
@@ -130,55 +137,35 @@ export default {
     goToPage() {
       router.push("/Posts");
     },
-    chargerAvatars(){
-      window.URL = window.URL || window.webkitURL;
-      var fileSelect = document.getElementById("fileSelect"),
-          fileElem = document.getElementById("fileElem");
-      fileSelect.addEventListener("click", function (e) {
-        if (fileElem) {
-          fileElem.click();
-        }
-        e.preventDefault(); // empêche la navigation vers "#"
-      }, false);
-    },
-    handleFiles(files) {
-      this.chargerAvatars()
-      var fileList = document.getElementById("fileList")
-      if (!files.length) {
-        fileList.innerHTML = "<p>Aucun fichier sélectionné !</p>";
-      } else {
-        fileList.innerHTML = "";
-        var list = document.createElement("ul");
-        fileList.appendChild(list);
-        for (var i = 0; i < files.length; i++) {
-          var li = document.createElement("li");
-          list.appendChild(li);
-          var img = document.createElement("img");
-          img.src = window.URL.createObjectURL(files[i]);
-          img.height = 60;
-          img.onload = function() {
-            window.URL.revokeObjectURL(this.src);
-          }
-          li.appendChild(img);
-          var info = document.createElement("span");
-          info.innerHTML = files[i].name + ": " + files[i].size + " bytes";
-          li.appendChild(info);
-        }
-      }
-    },
     saveAvatar(selected){
       let selectedAvatar = selected;
       this.user.avatar = selectedAvatar;
-      console.log('SSSSSSSSSSSSSSSAAAAAAVVVVVV', selectedAvatar)
-      return this.user.avatar
+    },
+    avatarChanged(e) {
+      this.file = e.files[0];
+      return this.file;
+    },
+    addFile(e) {
+      let files = e.dataTransfer.files;
+      console.log(files);
+      [...files].forEach(file => {
+        this.files.push(file);
+      });
+      if (this.files.length != 0) {   
+          this.file = this.files[0];
+        } else this.file = "";
+        return this.file
+    },
+    removeFile(file) {
+      this.files = this.files.filter(f => {
+        return f != file;
+      });
     },
     //Charger les données d'un utilisateur à partir du backend
     getUser() {
       //on récupère l'userId et le token qui ont été enregistrés dans le sessionStorage au moment du login
       const userId = sessionStorage.getItem("userId");
       const token = sessionStorage.getItem("token");
-      console.log('userID', userId);
-      console.log('token', token);
       //requête get api/users/profile/:id
       axios
       .get("http://localhost:3000/api/users/profile/" + userId, {
@@ -189,85 +176,57 @@ export default {
       })
       // si OK, on récupère le user, on enregistre dans le sessionStorage
       .then((response) => {
-        this.user = response.data.user;          
-        console.log('user', response.data);
-        console.log(response.data. emailDecrypted)
+        this.user = response.data.user;
         //on supprime le user qui était enregistré dans le sessionStorage
-        //sessionStorage.removeItem("user");
         sessionStorage.setItem("user", JSON.stringify(response.data.user));
+        let user=response.data.user;
+        sessionStorage.setItem("avatar", user.avatar);
+        const userEmail = response.data.email.emailDecrypted;
+        this.user.email = userEmail;
+        return this.user.email        
       })
     },
     fileChanged(event) {
-      /*if (!files.length) {
-      return files
-      }
-      console.log(filename, files)
-      const formData = new FormData()
-      for (let i = 0; i < files.length; i++) {
-        formData.append(filename, files[i], files[i].name)
-      }
-      axios
-      .post(`http://localhost:3000/upload`, formData).then(
-        rsp => {
-          console.log(rsp)
-        }
-      )
-      .catch(err => {
-        console.log(err)
-      })*/
-      
       this.file = event.target.files[0];
       return this.file;
     },
     //Mise à jour profil utilisateur
     updateUser() {
       let userId = parseInt(sessionStorage.getItem("userId"));
+      const avatar = sessionStorage.getItem('avatar');
       let updatedate = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      //let date = this.editedUser.userSelected.birthdate;
-      //let birthdate = date.toISOString().slice(0, 19).replace('T', ' ')
-      /*const dataForm = {
-        lastname: this.user.lastname, 
-        firstname: this.user.firstname,
-        pseudo: this.user.pseudo,
-        //email: this.user.email,
-        //password: this.user.password,
-        //sexe: this.user.sexe,
-        avatar: this.user.avatar,
-        //birthdate: this.user.birthdate,
-        bio: this.user.bio,
-        creationdate: JSON.parse(sessionStorage.getItem("user")).creationdate,
-        updatedate: updatedate,
-        role: sessionStorage.getItem("role"),
-      }*/
+      let birthdate = new Date(this.user.birthdate).toISOString().slice(0, 19).replace('T', ' ');
+      console.log('fffffffffff', this.file.name)
+      //this.user.avatar = this.file ? this.file.name : this.user.avatar.split("/upload/Avatars/")[1];
+      this.user.avatar = this.file ? this.file.name : avatar.split("/upload/Avatars/")[1];
+      //let media = this.file ? this.file : "";
       const dataForm = new FormData();
       if (this.user.lastname !="") dataForm.append("lastname", this.user.lastname);
       if (this.user.firstname !="") dataForm.append("firstname", this.user.firstname);
-      if (this.user.pseudo !="") dataForm.append("pseudo", this.user.pseudo);
-      if (this.file.name !="") dataForm.append("avatar", this.file.name);
+      if (this.user.pseudo !="") dataForm.append("pseudo", this.user.pseudo);      
+      if (this.user.email !="") dataForm.append("email", this.user.email);
+      if (this.user.sexe !="") dataForm.append("sexe", this.user.sexe);
+      if (this.user.avatar !="") dataForm.append("avatar", this.user.avatar);
       if (this.user.bio !="") dataForm.append("bio", this.user.bio);
+      if (this.user.birthdate !="") dataForm.append("birthdate", birthdate);
       dataForm.append("updatedate", updatedate);
-      dataForm.append("media", this.file);
-        console.log('eeeeeeeeeeeeeeeeeeeeeeee',this.user.lastname);
-        console.log('eeeeeeeeeeeeeeeeeeeeeeee',this.user.firstname);
-        console.log('eeeeeeeeeeeeeeeeeeeeeeee',this.user.pseudo);
-        console.log('eeeeeeeeeeeeeeeeeeeeeeee',this.file.name);
-        console.log('eeeeeeeeeeeeeeeeeeeeeeee',this.user.bio);
-        console.log('eeeeeeeeeeeeeeeeeeeeeeee',this.file.name);
-        console.log('eeeeeeeeeeeeeeeeeeeeeeee',dataForm);
-
-      //const token = sessionStorage.getItem("token");      
+      //if (this.file !="" || this.file != undefined) dataForm.append("media", this.file);
+      //if (media !="" ) dataForm.append("media", media);
+      const token = sessionStorage.getItem("token");      
       //requête put api/users/profile/:id
       axios
       .patch('http://localhost:3000/api/users/profile/'+userId,dataForm, {
-        /*headers: { 
-          'content-type': 'application/json',
+        headers: { 
           'Authorization': `Bearer ${token}`,
-        },*/
+        },
       })
       // si Ok, message
       .then((response) => {
         console.log(response);
+        console.log('UserUpdated',response.user);
         alert('Votre profil a bien été mis à jour!');
+        this.getUser();
+        window.location.reload();
       })
       .catch (function (error) {
         if (error.response) {
@@ -329,57 +288,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-@import "../assets/styles/utils/_variables.scss";
-@import "../assets/styles/utils/_extend.scss";
-.profile{
-  margin: 60px auto 5rem auto;
-  border-radius: $border-radius-m;
-  box-shadow: $net-shadow;
-  background-color: white;
-  max-width: 48rem;
-  width: 100%;
-}
-
-.form {
-  padding: 1rem 2rem;
-  img {
-    width: 100px;
-  }
-  #image-upload {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  .avatarsPreview {
-    width: 80px;
-    img {
-      width: 80px;
-    }
-  }
-}
-
-.boutons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-top: 0.5rem 0;
-    @media screen and (min-width: 768px) {
-    flex-direction: row;      
-    }
-  .submitButton {
-    border-radius: $border-radius-m;      
-    border: 1px solid $primary-color;
-    margin-top: 0.25rem;
-    line-height: 1.5rem;
-    border-width: 1px;
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-    margin: 0 1rem;
-    background: $primary-color;
-    color: white;
-    text-align: center;
-  }
-}
-</style>

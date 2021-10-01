@@ -1,30 +1,37 @@
 <!--Page d'inscription pour un nouvel utilisateur, demande pseudo, email et mot de passe-->
 <template>
-  <div class="signup">
-    <h1>Inscription</h1>
-    <div class="form">
-      <ValidationObserver v-slot="{ invalid }" tag="form" class="formulaire" @submit.prevent="onSubmit">
-          <!--<FormTextInput rules="required" label="Nom" name="lastname" type="text" v-model="lastname" placeholder="Votre nom "/>
-          <FormTextInput rules="required" label="Prénom" name="firstname" type="text" v-model="firstname" placeholder="Votre prénom "/>-->
-          <FormTextInput rules="required" label="Pseudo :" name="pseudo" type="text" v-model="pseudo" placeholder="Votre pseudo "/>
-          <FormTextInput rules="required|email" label="Email :" name="email" type="email" v-model="email" placeholder="Votre email "/>
-          <FormTextInput rules="required|min:6|confirmed:pass" label="Mot de passe :" name="password" type="password" v-model="password" placeholder="Votre mot de passe "/>
-          <FormTextInput rules="required" vid="pass" label="Confirmation du mot de passe :" type="password" placeholder="Répétez votre mot de passe"/>
-          <button :disabled="invalid" class="submitButton" >S'inscrire</button>
-      </ValidationObserver>
-      <router-link to="/Login" class="text" >Déjà inscrit ?</router-link>
+  <div class="maincontainer">
+    <Header @gotohome="path = '/Posts'" />
+    <div class="signup">
+      <h1>Inscription</h1>
+      <div class="form">
+        <ValidationObserver v-slot="{ invalid }" tag="form" class="formulaire" @submit.prevent="onSubmit">
+            <FormTextInput rules="required" label="Pseudo :" name="pseudo" type="text" v-model="pseudo" placeholder="Votre pseudo "/>
+            <FormTextInput rules="required|email" label="Email :" name="email" type="email" v-model="email" placeholder="Votre email "/>
+            <FormTextInput rules="required|min:6|confirmed:pass" label="Mot de passe :" name="password" type="password" v-model="password" placeholder="Votre mot de passe "/>
+            <FormTextInput rules="required" vid="pass" label="Confirmation du mot de passe :" type="password" placeholder="Répétez votre mot de passe"/>
+            <button :disabled="invalid" class="submitButton" >S'inscrire</button>
+        </ValidationObserver>
+        <router-link to="/Login" class="text" >Déjà inscrit ?</router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-const axios = require("axios").default
+const axios = require("axios").default;
+import Header from "../components/layout/LayoutHeaderHome.vue";
 import FormTextInput from "../components/forms/FormTextInput.vue";
 import router from "../router";
 import { ValidationObserver } from "vee-validate";
 
 export default {
-  name: "signup",
+  name: "signup", 
+  components: {
+    ValidationObserver,
+    Header,
+    FormTextInput,
+  },
   data() {
     let creationdate = new Date().toISOString().slice(0, 19).replace('T', ' ');
     return {
@@ -42,15 +49,9 @@ export default {
         role: "0",
     };    
   },
-
- components: {
-    ValidationObserver,
-    FormTextInput,
-  },
   methods: {
     onSubmit() {
-      alert("Vous êtes maintenant inscrit, merci de vous connecter pour accéder au forum!)\n\n");
-      this.submitted = true;
+      //this.submitted = true;
       //Création de l'utilisateur, on récupère les données du formulaire
       const user = {
         lastname: this.lastname, 
@@ -70,6 +71,7 @@ export default {
       .post('http://localhost:3000/api/users/signup', user)
       .then(function (response) {
         console.log(response);
+        alert("Vous êtes maintenant inscrit, merci de vous connecter pour accéder au forum!)\n\n");
         //redirection vers le login
         router.push("/Login");
       })
@@ -89,6 +91,7 @@ export default {
           // Something happened in setting up the request that triggered an Error
           console.log('Error', error.message);
         }
+        if (error.response.status == 401) {alert("Ce pseudo est déjà utilisé, merci d'en choisir un autre")}
         console.log(error.config);
       });
     },
@@ -102,55 +105,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import "../assets/styles/utils/_variables.scss";
-.signup {
-  margin: 5rem auto;
-  border-radius: $border-radius-m;
-  box-shadow: $net-shadow;
-  background-color: white;
-  max-width: 48rem;
-  width: 100%;
-}
-
-h1 {
-  text-align: center;
-  color: $secondary-color;
-}
-
-.submitButton {
-      border-radius: $border-radius-m;      
-      border: 1px solid $primary-color;
-      margin-top: 0.25rem;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.5rem;
-      font-size: 1rem;
-      padding: 0.5rem 2rem;
-      background: $primary-color;
-      color: white;
-      text-align: center; 
-    }
-
-.form {
-padding: 20px;
-  .formulaire {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    a {
-      text-decoration: none;
-    }
-  }
-}
-
-.text {
-  display: block;
-  width: 100%;
-  text-align: center;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  margin-top: 1rem;
-}
-</style>

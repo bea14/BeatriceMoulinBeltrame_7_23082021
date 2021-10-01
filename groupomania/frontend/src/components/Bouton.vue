@@ -3,7 +3,9 @@
     class="submitButton" 
     type="button"
     @click.prevent="emitCustomEvent"
-    >{{text}}</button>
+    >
+    {{text}}
+    </button>
 </template>
 
 <script>
@@ -11,8 +13,8 @@ export default {
     props: {
         text: String,
         disabled: {
-        type: Boolean,
-        default: undefined
+            type: Boolean,
+            default: undefined
         },
     },
     methods: {
