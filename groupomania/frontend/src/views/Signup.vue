@@ -42,7 +42,7 @@ export default {
         password: "",
         sexe: "",
         avatar:"default-avatar.png",
-        birthdate: "",
+        birthdate: null,
         bio: "",
         creationdate: creationdate,
         updatedate: creationdate,
