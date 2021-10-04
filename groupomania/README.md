@@ -56,4 +56,4 @@ Le projet consiste à construire un réseau social interne pour les employés de
 
 * Pour administrer les posts, deux rôles administrateur et modérateur existent. Il faut les attribuer via la DB sql.
 * Aller dans votre base groupomania, ouvrez la table users (cela suppose que vous avez déjà créé des utilisateurs sinon il faudra le faire).
-* Modifier le role en 1 (modératuer) ou 2 (administrateur) ou utiliser le fichier DB/setAdmin.sql qui permet de donner un rôle d'administrateur au premier utilisateur créé
+* Modifier le role en 1 (modérateur) ou 2 (administrateur) ou utiliser le fichier DB/setAdmin.sql qui permet de donner un rôle d'administrateur au premier utilisateur créé
