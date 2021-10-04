@@ -40,14 +40,14 @@ Le projet consiste à construire un réseau social interne pour les employés de
 * se placer dans le dossier frontend
 * npm install
 * npm run serve
-* Le serveur doit fonctionner sur http://localhost:8080/
+* Le serveur doit fonctionner sur [`http://localhost:8000/`](http://localhost:8080/)
 
 
 ## Lancement backend
 * se placer dans le dossier backend
 * npm install
 * node server
-* Le serveur doit fonctionner sur http://localhost:3000/
+* Le serveur doit fonctionner sur [`http://localhost:3000/`](http://localhost:3000/)
 
 ## Lancement appli
 * Ouvrez votre navigateur et allez sur : [`http://localhost:8080`](http://localhost:8080)
