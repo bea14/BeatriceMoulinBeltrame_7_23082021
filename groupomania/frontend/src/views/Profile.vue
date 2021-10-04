@@ -2,7 +2,7 @@
   <div class="maincontainer">
     <Header @gotohome="path = '/Posts'"/>
     <div class="profile">
-      <h1>Profil {{ userRole }} de {{ pseudo }}</h1>
+      <h1>Profil {{ userRole() }} de {{ pseudo }}</h1>
       <h2>Compte créé le {{ user.user_creationdate_fr }}</h2>
       <div class="form">
         <!-- @submit.prevent="avatarChanged(user.avatar);updateUser"-->
@@ -12,12 +12,14 @@
           <FormTextInput label="Pseudo :" name="pseudo" type="text" v-model="user.pseudo" placeholder="Votre pseudo"/>
           <FormTextInput label="Email : " name="email" v-model="user.email" placeholder="Votre email"/><!--
           <FormTextInput rules="min:6" label="Mot de passe :" name="password" v-model="user.password" placeholder="Votre mot de passe"/>-->
-        <div class="form-radio">
-            <label>Votre sexe :</label>
-            <FormRadio label="Masculin" name="Masculin" type="radio" v-model="user.sexe" v_value="M "/>Masculin
-            <FormRadio label="Feminin" name="Feminin" type="radio" v-model="user.sexe" v_value="F "/>Féminin
-            <FormRadio label="Autre" name="Autre" type="radio" v-model="user.sexe" v_value="A "/>Autre
-        </div>
+          <div class="form-radio">
+            <span>Votre sexe :</span>
+            <FormRadio label="Masculin" name="sexe" type="radio" v-model="user.sexe" :value="selectedValue"  @change="changeValue"/>
+            <!--
+            <FormRadio label="Feminin" name="Feminin" type="radio" v-model="user.sexe" v_value="F "/>-->
+            <FormRadio label="Feminin" name="sexe" type="radio" v-model="user.sexe" :value="selectedValue"  @change="changeValue"/>
+            <FormRadio label="Autre" name="sexe" type="radio" v-model="user.sexe" :value="selectedValue"  @change="changeValue"/>
+          </div>
           <span>Avatar : <img :src="`${avatar}`" alt="Avatar utilisateur"></span> 
           <p>
             <span >Cliquer pour choisir un autre avatar :</span>
@@ -105,6 +107,7 @@ export default {
       avatar,
       user: sessionStorage.getItem("user"),
       role: "0",
+      selectedValue: "1",
       files:[],
       Avatars: [
         {name:'avatar1', img: 'http://localhost:3000/upload/Avatars/avatar1.jpg'},
@@ -131,11 +134,30 @@ export default {
   //Quand le DOM est monté, on lance getUser
   mounted() {
     this.getUser();
+    this.userRole();
   },  
   methods: {
+    //Récupération de la valeur du boutn pour le sexe
+    changeValue(newValue) {
+            this.selectedValue = newValue;
+            this.user.sexe = this.selectedValue;
+    },
     //redirection vers la page d'articles
     goToPage() {
       router.push("/Posts");
+    },
+    //Profil du user
+    userRole(){
+      let userRole="";
+      const role = sessionStorage.getItem("role");
+      console.log(role)
+      role == 0 
+        ? userRole = "membre"
+        : role == 1
+          ? userRole ="modérateur"
+          : userRole = "administrateur"
+          console.log(userRole)
+      return userRole
     },
     saveAvatar(selected){
       let selectedAvatar = selected;
@@ -195,8 +217,6 @@ export default {
       let userId = parseInt(sessionStorage.getItem("userId"));
       const avatar = sessionStorage.getItem('avatar');
       let updatedate = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      let birthdate = new Date(this.user.birthdate).toISOString().slice(0, 19).replace('T', ' ');
-      console.log('fffffffffff', this.file.name)
       //this.user.avatar = this.file ? this.file.name : this.user.avatar.split("/upload/Avatars/")[1];
       this.user.avatar = this.file ? this.file.name : avatar.split("/upload/Avatars/")[1];
       //let media = this.file ? this.file : "";
@@ -206,9 +226,9 @@ export default {
       if (this.user.pseudo !="") dataForm.append("pseudo", this.user.pseudo);      
       if (this.user.email !="") dataForm.append("email", this.user.email);
       if (this.user.sexe !="") dataForm.append("sexe", this.user.sexe);
+      console.log(this.user.sexe)
       if (this.user.avatar !="") dataForm.append("avatar", this.user.avatar);
       if (this.user.bio !="") dataForm.append("bio", this.user.bio);
-      if (this.user.birthdate !="") dataForm.append("birthdate", birthdate);
       dataForm.append("updatedate", updatedate);
       //if (this.file !="" || this.file != undefined) dataForm.append("media", this.file);
       //if (media !="" ) dataForm.append("media", media);
@@ -226,7 +246,7 @@ export default {
         console.log('UserUpdated',response.user);
         alert('Votre profil a bien été mis à jour!');
         this.getUser();
-        window.location.reload();
+        location.reload();
       })
       .catch (function (error) {
         if (error.response) {
