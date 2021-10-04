@@ -6,7 +6,7 @@
   color: $tertiary-color;
   h2 {
       margin-top: 0;
-      margin-left: 10px;
+      margin-left: 0.6rem;
   }
 }
 
@@ -59,7 +59,7 @@
   margin-bottom: 0.5rem;
   span {
     font-weight: bold;
-    font-size: 16px;
+    font-size: $font-size-base;
     margin-bottom: 0.2rem;
   }
   }
