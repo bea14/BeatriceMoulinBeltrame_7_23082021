@@ -16,7 +16,7 @@
               </button>
               <!--Bouton de mise à jour-->
               <router-link :to="{ name: 'UpdateComment', params: { postId: postId, commentId: commentData.id } }">
-                  <button v-if="commentData.author == userId || userIsAdmin">
+                  <button v-if="commentData.author == userId">
                   <span class="sr-only">Modifier</span>
                   <i class="fas fa-edit" aria-hidden="true">&nbsp;&nbsp;</i>
                   </button>
