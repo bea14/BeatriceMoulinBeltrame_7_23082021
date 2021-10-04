@@ -26,4 +26,34 @@ Le projet consiste à construire un réseau social interne pour les employés de
 * framework : Vuejs et Express ;
 * serveur : NodeJS ;
 * base de données : SQL ;
+* SASS
 
+## Installation
+* Cloner ce dossier ou télecharger le fichier zip du dossier
+* Installer Node.js
+* Installer Vue.js
+* Installer MySQL
+* Renommer le fichier backend\.env.exemple en backend\.env et le compléter avec vos données
+* Importer la base de données : récupérer le fichier DB\ModeleGoupomaniaDB.sql et l'importer dans MySQL
+
+## Lancement frontend
+* se placer dans le dossier frontend
+* npm install
+* npm run serve
+* Le serveur doit fonctionner sur [`http://localhost:8000/`](http://localhost:8080/)
+
+
+## Lancement backend
+* se placer dans le dossier backend
+* npm install
+* node server
+* Le serveur doit fonctionner sur [`http://localhost:3000/`](http://localhost:3000/)
+
+## Lancement appli
+* Ouvrez votre navigateur et allez sur : [`http://localhost:8080`](http://localhost:8080)
+
+#### Administrateur/Modérateur
+
+* Pour administrer les posts, deux rôles administrateur et modérateur existent. Il faut les attribuer via la DB sql.
+* Aller dans votre base groupomania, ouvrez la table users (cela suppose que vous avez déjà créé des utilisateurs sinon il faudra le faire).
+* Modifier le role en 1 (modérateur) ou 2 (administrateur) ou utiliser le fichier DB/setAdmin.sql qui permet de donner un rôle d'administrateur au premier utilisateur créé

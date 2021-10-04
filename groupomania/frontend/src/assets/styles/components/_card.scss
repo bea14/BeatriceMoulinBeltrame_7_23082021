@@ -1,0 +1,171 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    max-width: 100%;
+    .card-header{
+        display: flex;
+        flex-direction: column;
+        background-color: lighten($secondary-color,5%);
+        color: white;
+        min-width: 100%;
+        max-width: 100%;
+        border-top-left-radius: $border-radius-s;
+        border-top-right-radius: $border-radius-s;
+        @media screen and (min-width: 768px) {
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;     
+            }
+        &-top {
+            padding: 0.5rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            span{
+                margin-left: 0.5rem;
+            }
+            img {
+                height: 30px;
+                border-radius: $border-radius-circle;
+                border: 1px solid white;
+                object-fit: contain;
+                margin-left: 0.5rem;
+            }        
+        }
+        &-bottom {          
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        &-buttons{
+            display: flex;
+            justify-content: center;
+            margin: 0 0.4rem;
+            .card-button{
+                background-color: white;
+                border-radius: $border-radius-m;
+                color: black;
+                margin: 0.5rem 0;
+                padding: 0 0.5rem;
+                @media screen and(min-width: 768px){
+                    margin: 0 1rem;          
+                }
+            }
+        }
+        .red-color {
+            color:red;
+        }
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem 0.5rem;
+        overflow: hidden;
+        &-title {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            h2 {
+                margin: 0.5rem 0;
+            }
+            .badge {
+                padding: 0.5rem 1rem;
+                margin-left: 0.5rem;
+                background-color: $primary-color;
+                font-size: 12px;
+                color: white;
+                border-radius: 30px;
+                font-weight: $weight-bold;
+            }
+        }
+        &-image{
+            img {
+                width: 100%;
+                @media screen and (min-width: 768px) {
+                    max-height: 15vh;
+                }
+            }
+        }
+        &-video {
+            video {
+                width: 100%;
+                @media screen and (min-width: 768px) {
+                    max-height: 15vh;
+                }
+            }
+        }
+        &-text{
+            width: 90%;
+            word-wrap: break-word;
+        }
+    }
+    .card-footer{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        background-color: lighten($secondary-color,5%);
+        color: white;
+        padding: 0.5rem 0;
+        border-bottom-left-radius: $border-radius-s;
+        border-bottom-right-radius: $border-radius-s;
+        min-width: 100%;
+        max-width: 100%;
+        width: 70vw;;
+        @media screen and (min-width: 768px){
+            flex-direction: row;
+        }
+        &-items {
+            margin: 0.2rem 0.5rem;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+             div {
+                 padding: 0 10px;
+             }
+        }
+        .inactive {
+            color: grey; 
+        }
+        .votes{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            .fas .fa-thumbs-up,.fas .fa-thumbs-down {
+                color: transparent;
+              }
+            span {
+                font-weight: $weight-bold;
+                padding: 0 0.5rem;
+                i {                    
+                    font-size: 15px;
+                    opacity: 0.6;
+                    font-weight: $weight-bold;
+                }
+            }
+            .red {
+                color: red;
+            }
+            .blue {
+                color: blue;
+            }
+        }       
+    }
+}
+
+.sr-only {
+    height: 1px;
+    width: 1px;
+    padding: 0;
+    margin: -1px;
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+    position: absolute;
+    border: 0;
+  }

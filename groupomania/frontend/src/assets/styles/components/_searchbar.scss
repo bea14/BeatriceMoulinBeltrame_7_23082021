@@ -1,0 +1,37 @@
+//searchbar
+.searchbar {
+  background-color: $bg-body;
+  padding: 0 1rem; 
+  margin: 0 0.5rem 1rem 1rem;
+  border-radius: $border-radius-xs;
+  box-shadow: $shadow;
+  display: flex;
+  align-items: center;
+  border: 1px solid $bg-body;
+  height: auto;
+  line-height: 1.78rem;
+  @media screen  and (min-width: 768px){        
+      margin: 0 1rem;
+  }
+  input {
+      height: 5vh;
+      margin-left: 0.7rem;
+      background-color: $bg-body;
+      font-size: 13px;
+      width: 180px;
+      border: 0;
+      line-height: 1.78rem;
+      :focus {
+      outline: none;
+      }
+      @media screen  and (min-width: 768px){        
+          padding: 0.3rem 0.7rem;
+      }
+  }
+  .fa-search {        
+      color: #747474;
+      &:focus {
+      outline: none;
+    }
+  }
+}

@@ -1,0 +1,41 @@
+// variables.scss
+//colors
+$primary-color: #FD2D06;
+$secondary-color: #091F43;
+$tertiary-color: #30475E;
+$quaternary-color: #2454A3;
+$dark-color: #222831;
+
+$bg-body: #e8e8e8;
+
+$shadow-color: rgba(0, 0, 0, 0.25);
+$shadow-color-hover:rgba(0, 0, 0, 0.5);
+
+$button-shadow-color: rgba(163,163,163,0.2);
+$button-shadow-hover-color: rgba(163,163,163,0.6);
+//shadow
+$shadow: 0 2px 5px rgb(170, 170, 170);
+$blur-shadow: 0 10px 10px rgb(230, 230, 230);
+$dark-shadow: 0 5px 15px rgb(120, 120, 120);
+
+// Links
+$link-decoration: underline;
+$link-decoration-hover: underline;
+$link-decoration-none: none;
+
+//padding
+$padding-xs: 5px;
+$padding-s: 10px;
+$padding-m: 20px;
+$padding-l: 30px;
+$padding-xl: 40px;
+
+//border-radius
+$border-radius-none: 0;
+$border-radius-xs: 0.5rem;
+$border-radius-s: 1rem;
+$border-radius-m: 2rem;
+$border-radius-l: 6rem;
+$border-radius-xl: 100%;
+$border-radius-circle: 50%;
+

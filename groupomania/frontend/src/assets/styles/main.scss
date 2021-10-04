@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+
+//1. configuration et utilitaires
+@import 
+    './utils/variables';
+
+//2. Base
+@import 
+'./base/typography',
+'./base/reset',
+'./base/base';
+
+//3.Component styles
+@import 
+    './components/buttons',
+    './components/card',
+    './components/form',
+    './components/modal',
+    './components/table',
+    './components/searchbar';
+
+//4. Page-specific styles
+@import 
+    './pages/home',
+    './pages/signup',
+    './pages/login',
+    './pages/posts',
+    './pages/profile',
+    './pages/admin',
+    './pages/user';
+
+//5.Layout styles
+@import
+    './layout/aside',
+    './layout/header',
+    './layout/footer';

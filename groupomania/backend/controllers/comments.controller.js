@@ -30,7 +30,7 @@ exports.createComment = (req, res, next) => {
 //Affichage de tous les commentaires d'un post, on récupère le pseudo de l'auteur
 exports.getAllComments = (req, res,) => {
     const postId = req.params.postId;
-    sql.query('SELECT comments.id, comments.author, comments.topic, comments.content,DATE_FORMAT(comments.updatedate, "%d/%m/%Y") AS comment_date_fr , user.pseudo, user.avatar FROM comments INNER JOIN user ON comments.author = user.id  WHERE topic=? ORDER BY comments.id DESC ', [postId], function (error, results, fields) {
+    sql.query('SELECT comments.id, comments.author, comments.topic, comments.content,DATE_FORMAT(comments.updatedate, "%d/%m/%Y") AS comment_date_fr, comments.isreported, DATE_FORMAT(comments.isreporteddate, "%d/%m/%Y") AS comment_reportingdate_fr, user.pseudo, user.avatar FROM comments INNER JOIN user ON comments.author = user.id  WHERE topic=? ORDER BY comments.id', [postId], function (error, results, fields) {
         if (error) {
             console.error(error);
             return res.status(500).json({ error });
@@ -73,13 +73,7 @@ exports.getAllCommentsForUser = (req, res,) => {
 exports.updateComment = (req, res,) => {
     //On récupère l'id du commentaire
     const commentId = req.params.commentId; 
-    //on créé le commentaire mis à jour d'après le modèle en ne mettant que les champs modifiables/obligatoires
-    /*const updatedComment = new Comment({    
-        content: req.body.content,
-        author: req.body.author,
-        topic: req.body.topic,
-        updatedate: req.body.updatedate
-    });*/
+    //on récupère les données envoyées par le front
     const updatedComment = req.body;
     //on met à jour dans la DB le commentaire
     sql.query('UPDATE comments SET ? WHERE id=?', [updatedComment, commentId], (error, results, fields) => {
@@ -100,59 +94,10 @@ exports.deleteComment = (req, res,) => {
     const commentId = req.params.commentId;
     //on recupère l'id de l'utilisateur
     const userId = req.body.userId;
-    //if (userIsAdmin || userIsAuthorized) {
-        sql.query('DELETE FROM comments WHERE id=?', [commentId], (error, results, fields) => {
-            if (error) {
-                return res.status(500).json({ error });
-            }
-            return res.status(200).json({ message: 'commentaire supprimé' });
-        })
-    //}
-}
-
-//Ajout des like ou dislike d'un commentaire A FIARE
-exports.likedislikeComment = (req, res,) => {
-    sql.query('SELECt * FROM commentsvotes WHERE id=?', [comentId], (error, results, fields) => {
-        switch (req.body.like) {
-          case -1: //clic sur dislike
-            //on regarde si le userId est présent dans la colonne dislike, si non on le push
-            if (sauce.usersDisliked.indexOf(req.body.userId) === -1) {
-              sauce.usersDisliked.push(req.body.userId);
-            }
-            break;
-  
-          case 1: //clic sur like
-            //on regarde si le userId est présent dans la tableau usersLiked, si non on le push
-            if (sauce.usersLiked.indexOf(req.body.userId) === -1) {
-              sauce.usersLiked.push(req.body.userId);
-            }
-            break;
-          case 0: //annule like ou dislike
-            //on regarde si le userId est présent dans la tableau usersDisliked, si oui on le splice
-            if (sauce.usersDisliked.indexOf(req.body.userId) !== -1) {
-              sauce.usersDisliked.splice(
-                sauce.usersDisliked.indexOf(req.body.userId, 1)
-              );
-            }
-            //on regarde si le userId est présent dans la tableau usersLiked, si oui on le splice
-            if (sauce.usersLiked.indexOf(req.body.userId) !== -1) {
-              sauce.usersLiked.splice(
-                sauce.usersLiked.indexOf(req.body.userId, 1)
-              );
-            }
-            break;
-          default:
-            return res.status(400).json({ error: "Valeur de like invalide !" });
+    sql.query('DELETE FROM comments WHERE id=?', [commentId], (error, results, fields) => {
+        if (error) {
+            return res.status(500).json({ error });
         }
-        //Affichage  du nombre de like et de dislike
-        sauce.likes = sauce.usersLiked.length;
-        sauce.dislikes = sauce.usersDisliked.length;
-        sauce
-          .save()
-          .then(() =>
-            res.status(200).json({ message: "Compteurs de likes mis à jour !" })
-          )
-          .catch((error) => res.status(400).json({ error }));
-      })
-      .catch((error) => res.status(400).json({ error }));
+        return res.status(200).json({ message: 'commentaire supprimé' });
+    })
 }

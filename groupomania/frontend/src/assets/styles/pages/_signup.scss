@@ -1,0 +1,12 @@
+//page d'inscription
+.signup {
+    margin: 12rem auto 2rem auto;
+    border-radius: $border-radius-m;
+    box-shadow: $shadow;
+    background-color: white;
+    max-width: 48rem;
+    width: 100%;
+    @media screen and (min-width: 767px){
+      margin: 5rem auto 2rem auto;
+    }
+  }

@@ -7,6 +7,8 @@ const Post = function(post) {
   this.creationdate = post.creationdate;
   this.updatedate = post.updatedate;
   this.tag = post.tag;
+  this.isreported = post.isreported;
+  this.isreporteddate = post.isreporteddate;
 }
   
 module.exports = Post;

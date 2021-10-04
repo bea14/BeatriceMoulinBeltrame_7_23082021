@@ -1,0 +1,113 @@
+.form {
+  padding: 1.5rem;
+  .formulaire {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.RadioInput {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  label {
+    padding-bottom: 0;
+  }  
+}
+
+.text {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.FormTextInput {
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+  
+.TextAreaInput {
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+  input {
+    margin-top: 0.25rem;
+  }
+}
+
+input {
+  border-radius: $border-radius-s;
+  line-height: 1.5rem;
+  border-width: 1px;
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  background-color: $bg-body;
+  max-width: 100%;
+  &.border-gray-700 { border-color: #4a5568; }
+  &.border-gray-600 { border-color: #718096; }
+  &.has-value,
+  &:focus {
+    outline: none;
+  }
+}
+
+label {
+  padding-bottom: 0.5rem;
+  &.text-gray-700 {color: #4a5568;} 
+  &.text-red-600 { color: #e53e3e; }
+  input.has-value ~ label,
+  input:focus ~ label {
+    font-size: 0.6rem;
+    margin-top: 0;
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+.FormDate {
+  $spacing: 0.75em;
+  display: inline-flex;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #888;
+  border-radius: 0.25em;
+  // 1. Hide the spinner button in Chrome, Safari and Firefox.
+  &__input {
+    padding: $spacing;
+    padding-right: $spacing / 2;
+    padding-left: $spacing / 2;
+    border: none;
+    text-align: center;
+    -moz-appearance: textfield; // 1
+    &::-webkit-inner-spin-button {
+      display: none; // 1
+    }
+    &:first-child {
+      padding-left: $spacing;
+    }
+    &:last-child {
+      padding-right: $spacing;
+    }
+    &:focus {
+      outline: none;
+    }
+    &--day,
+    &--month {
+      width: 3em;
+    }
+    &--year {
+      width: 4em;
+    }
+  }
+  &__divider {
+    padding-top: $spacing;
+    padding-bottom: $spacing;
+    pointer-events: none;
+  }
+}

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 //utilisation de bcrypt pour hachage du mot de passe
 const bcrypt = require('bcrypt');
 //Package crypto-js
-const cryptoJS = require("crypto-js");
+const CryptoJS = require("crypto-js");
 //connect to DB
 const sql = require("../config/db.config");
 //user model
@@ -13,20 +13,36 @@ const User = require("../models/user.model");
 const fs = require('fs');
 
 //Crypto-js
+//Password
+var password = process.env.EMAIL_SECRET_TOKEN;
 // Secret key pour l'email
-var key = cryptoJS.enc.Hex.parse(process.env.EMAIL_SECRET_TOKEN);
+var key = process.env.KEY;
 // Initialisation vecteur
-var iv = cryptoJS.enc.Hex.parse(process.env.iv);
+var iv = process.env.IV;
+//Salt
+var salt = process.env.IV;
 //Encrypt email
 const encryptEmail = (string) => {
-  const enc = cryptoJS.AES.encrypt(string, key, { iv: iv }).toString();
-  return enc;
+  const encrypted = CryptoJS.AES.encrypt(string, key, { 
+      iv: iv, 
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+    })
+  var transitmessage = salt.toString()+ iv.toString() + encrypted.toString();
+  return transitmessage;
 };
 //Decrypt email
-const decryptEmail = (cryptedstring) => {
-    const bytes = cryptoJS.AES.decrypt(cryptedstring, key, { iv: iv });    
-    var plaintext = bytes.toString(cryptoJS.enc.Utf8);
-    return plaintext
+//Il faudra afficher ensuite decrypted.toString(CryptoJS.enc.Utf8)
+const decryptEmail = (transitmessage) => {
+    //var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+    var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32));
+    var encrypted = transitmessage.substring(64);
+    const decrypted = CryptoJS.AES.decrypt(encrypted, key, { 
+        iv: iv, 
+        padding: CryptoJS.pad.Pkcs7,
+        mode: CryptoJS.mode.CBC
+    });
+    return decrypted
 };
 
 //creation nouvel utilisateur
@@ -110,15 +126,17 @@ exports.login = (req, res, next) => {
                 if (!valid) {
                   return res.status(401).json({ error: "Mot de passe incorrect !" });
                 }
-                //on récupère l'id, le pseudo et le rôle
+                //on récupère l'id, le pseudo, l'avatar et le rôle
                 const userId = results[0].id;
-                const pseudo = results[0].pseudo;
+                const pseudo = results[0].pseudo;                
+                const avatar = results[0].avatar;
                 const role = results[0].role;
                 //si le mot de passe correspond alors création d'un token d'identification
                 res.status(200).json({
                     message: 'Vous êtes maintenant connecté',
                     userId: userId,
                     pseudo: pseudo,
+                    avatar: avatar,
                     role: role,
                     token: jwt.sign(
                     //id utilisateur et role
@@ -142,6 +160,11 @@ exports.getAllUsers = (req, res, next) => {
         if (error) {
           return res.status(400).json(error)
         }
+         // on decrypte l'email pour l'afficher en clair 
+         //emailCrypted = results.email;
+         //emailDecrypted = decryptEmail(emailCrypted).toString(CryptoJS.enc.Utf8);
+         // on retourne la reponse
+         //return res.status(200).json({ user: results, email : {emailCrypted, emailDecrypted} });
         return res.status(200).json({ results })
       }
     )
@@ -161,16 +184,11 @@ exports.getProfile = (req, res, next) => {
             return res.status(401).json({ message: 'utilisateur inexistant' });
         } else {
             //sinon tableau avec la réponse
-            // on decrypte l'email pour l'afficher en clair            
-           // emailDecrypted = decryptEmail(results[0].email);
-           emailcrypte0=results[0].email;
-           emailDecrypted =decryptEmail(emailcrypte0);
-           email1 = "123456";
-           emailcrypte = encryptEmail(email1);
-           emaildecrypte = decryptEmail(emailcrypte);
-           mail = {email1, emailcrypte, emaildecrypte};
-;            // on retourne la reponse
-            return res.status(200).json({ user: results[0], email : {email1, emailcrypte, emaildecrypte,emailcrypte0,emailDecrypted} });
+            // on decrypte l'email pour l'afficher en clair 
+            emailCrypted = results[0].email;
+            emailDecrypted = decryptEmail(emailCrypted).toString(CryptoJS.enc.Utf8);
+            // on retourne la reponse
+            return res.status(200).json({ user: results[0], email : {emailCrypted, emailDecrypted} });
         }
     });
 }
@@ -180,29 +198,15 @@ exports.updateProfile = (req, res, next) => {
     //on récupère l'id de l'utilisateur
     const userId = req.params.id;
     // on créé l'utilisateur d'après le modèle
-    /*const updatedUser = new User({    
-        lastname: req.body.lastname,
-        firstname: req.body.firstname,
-        pseudo: req.body.pseudo,
-        email: encryptEmail(req.body.email),
-        password: password,
-        sexe: req.body.sexe,
-        //On génère l'url de l'image par rapport à son nom de fichier
-        avatar: req.body.avatar,//`${req.protocol}://${req.get("host")}/upload/${req.file.filename}`,
-        //birthdate: req.body.birthdate,
-        bio: req.body.bio,
-        updatedate: req.body.updatedate,
-        role: req.body.role
-
-    });*/
     const updatedUser = req.body;
+    // récupération de l'email pour le crypter
+    updatedUser.email = encryptEmail(req.body.email);
     //on vérifie s'il y a un fichier multimedia, si oui on récupère et on crée le lien si non on enregistre null
-    updatedUser.avatar = req.file ? `${req.protocol}://${req.get("host")}/upload/${req.file.filename}` : null;
+    updatedUser.avatar = req.body.avatar ? `${req.protocol}://${req.get("host")}/upload/Avatars/${req.body.avatar}` : "";
     // Requête de mise à jour
     sql.query('UPDATE user SET ? WHERE id=?', [updatedUser, userId], (error, results, fields) => {
         //si erreur message
         if (error) {
-            console.log(req.body);
             return res.status(500).json({ error });
         } else if (results.length === 0) {
             //si resultat vide message
@@ -218,36 +222,20 @@ exports.updateProfile = (req, res, next) => {
 exports.deleteProfile = (req, res, next) => {
     //on récupère l'id de l'utilisateur à supprimer
     const userId = req.params.id;
-    const role = req.body.role;
-    let userIsAdmin = false;
-    if (role == 1 || role == 2) {
-        userIsAdmin = true;
-    }
-    userIsAuthorized = true;
-    //si l'utilisateur est un admin ou l'utilisateur du compte, il peut supprimer
-    if (userIsAdmin || userIsAuthorized) {
-        sql.query('DELETE FROM user WHERE id=?', [userId], (error, results, fields) => {
-            //erreur donc message
-            if (error) {
-                return res.status(500).json({ error });
-            } else if (results.length === 0) {
-                //resultat vide donc message
-                return res.status(401).json({ message: 'utilisateur inexistant' });
-            } else {
-                //Ok donc message
-                return res.status(200).json({ user: results[0], message: 'utilisateur supprimé' });
-            }
-        });
-    }
-    else {
-        //pas autorisé à faire cette requete car pas admin ou pas le possesseur du compte
-        return res.status(401).json({
-            error: true,
-            message: 'Vous n\'êtes pas autorisé à faire cette demande' 
-        });
-    }
+    sql.query('DELETE FROM user WHERE id=?', [userId], (error, results, fields) => {
+        //erreur donc message
+        if (error) {
+            return res.status(500).json({ error });
+        } else if (results.length === 0) {
+            //resultat vide donc message
+            return res.status(401).json({ message: 'utilisateur inexistant' });
+        } else {
+            //Ok donc message
+            return res.status(200).json({ user: results[0], message: 'utilisateur supprimé' });
+        }
+    });
     //s'il y a un avatar, on le supprime aussi
-    if(req.body.avatar) {
+    /*if(req.body.avatar) {
         fs.unlinkSync(`upload/${req.body.avatar}`);
-    }
+    }*/
 };

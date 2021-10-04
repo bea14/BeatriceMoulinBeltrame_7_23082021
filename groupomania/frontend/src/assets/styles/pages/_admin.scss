@@ -1,0 +1,25 @@
+//Page administrateur
+.admin {
+    max-width: 800px;
+    margin: auto;
+    padding-bottom: 100px;
+    .admin-title {
+        display: flex;
+        justify-content: center;
+        padding: 15px;
+        margin-top: 30px;
+        color: $secondary-color;
+        h2 {
+            margin-top: 15px;
+            margin-left: 10px;
+          }
+        img {
+        width: 70px;
+        height: 70px;
+        }
+      }
+  }
+
+  .weightbold {
+      font-weight: $weight-bold;
+  }
