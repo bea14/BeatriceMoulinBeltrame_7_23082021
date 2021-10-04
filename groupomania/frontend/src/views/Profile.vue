@@ -217,9 +217,7 @@ export default {
       let userId = parseInt(sessionStorage.getItem("userId"));
       const avatar = sessionStorage.getItem('avatar');
       let updatedate = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      //this.user.avatar = this.file ? this.file.name : this.user.avatar.split("/upload/Avatars/")[1];
       this.user.avatar = this.file ? this.file.name : avatar.split("/upload/Avatars/")[1];
-      //let media = this.file ? this.file : "";
       const dataForm = new FormData();
       if (this.user.lastname !="") dataForm.append("lastname", this.user.lastname);
       if (this.user.firstname !="") dataForm.append("firstname", this.user.firstname);
@@ -230,8 +228,6 @@ export default {
       if (this.user.avatar !="") dataForm.append("avatar", this.user.avatar);
       if (this.user.bio !="") dataForm.append("bio", this.user.bio);
       dataForm.append("updatedate", updatedate);
-      //if (this.file !="" || this.file != undefined) dataForm.append("media", this.file);
-      //if (media !="" ) dataForm.append("media", media);
       const token = sessionStorage.getItem("token");      
       //requête put api/users/profile/:id
       axios
