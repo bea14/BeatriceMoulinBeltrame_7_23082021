@@ -96,20 +96,34 @@ exports.updatePost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
     //on récupère l'id du post à supprimer
     const postId = req.params.id;
-    //supression du fichier du dossier images
-    deletePostMedia = req.file ? `${req.protocol}://${req.get("host")}/upload/${req.file.filename}`: null; 
-    if(this.deletePostMedia) {
-        //fs.unlinkSync(`upload/${req.body.media_url}`);
-        fs.unlinkSync(deletePostMedia);
-    }
-    //requete DELETE
-    sql.query('DELETE FROM topics WHERE id=?', [postId], (error, results, fields) => {
-        if (error) {
-            return res.status(500).json({ error });
+    let filename = "";
+    //Selection de l'image du post à supprimer
+    sql.query('SELECT media_url FROM topics WHERE id=?',[postId], (error, results, fields) => {
+        if (results.length > 0) {
+            results[0].media_url != null ? filename = results[0].media_url.split("/upload/")[1] : "";
+            //supression du fichier du dossier images
+            fs.unlink(`upload/${filename}`, () => { 
+                //requete DELETE
+                sql.query('DELETE FROM topics WHERE id=?', [postId], (error, results, fields) => {
+                    if (error) {
+                        return res.status(500).json(error.message);
+                    }
+                    res.status(200).json({ message: "Post supprimé !" });
+                });
+            });
+        } else {
+            //requete DELETE
+            sql.query('DELETE FROM topics WHERE id=?', [postId], (error, results, fields) => {
+                if (error) {
+                    return res.status(500).json({ error });
+                }
+                return res.status(200).json({ message: 'post supprimé' });
+            });
         }
-        return res.status(200).json({ message: 'post supprimé' });
-    });
-    
+        if (error) {
+            return res.status(500).json(error.message);
+        }  
+    }); 
 };
 
 //creation ou modification like ou dislike d'un post
