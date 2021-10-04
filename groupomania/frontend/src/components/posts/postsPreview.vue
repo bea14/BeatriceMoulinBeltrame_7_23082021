@@ -27,7 +27,7 @@
               </button>
               <!--Bouton de mise à jour-->
               <router-link :to="{ name: 'UpdatePost', params: { id: postData.id } }">
-                <button v-if="postData.pseudo == this.pseudo || userIsAdmin" class="card-button" aria-label="Modifier l'article">
+                <button v-if="postData.pseudo == this.pseudo" class="card-button" aria-label="Modifier l'article">
                 <i class="fas fa-edit" aria-hidden="true">
                   &nbsp;&nbsp;
                 </i>
