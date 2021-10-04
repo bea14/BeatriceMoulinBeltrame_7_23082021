@@ -191,14 +191,12 @@ export default {
     deletePost() {      
       const postId = this.postId;
       const token = sessionStorage.getItem("token");
-      let media_url = this.post.media_url? this.post.media_url : null;
       //requête delete api/topics/:id
       axios
       .delete('http://localhost:3000/api/topics/'+postId,{
         headers: { 
           'Authorization': `Bearer ${token}`,
         },
-        data: { media_url },
       })
       //si OK, on efface le sessionStorage et on redirige versles articles
       .then((response) => {
