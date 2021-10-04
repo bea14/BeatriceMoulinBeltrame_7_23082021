@@ -37,7 +37,7 @@ export default {
     };
   },
   methods: {
-    //on récupère les données de l'utilisaeur depuis le backend
+    //on récupère les données de l'utilisateur depuis le backend
     onSubmit() {
       const user = { pseudo: this.pseudo, password: this.password };
       const pseudo = this.pseudo;
@@ -70,6 +70,7 @@ export default {
           // Something happened in setting up the request that triggered an Error
           console.log('Error', error.message);
         }
+        if (error.response.status == 401) {alert("Pseudo ou mot de passe incorrect !")}
         console.log(error.config);
       });
     }, 
