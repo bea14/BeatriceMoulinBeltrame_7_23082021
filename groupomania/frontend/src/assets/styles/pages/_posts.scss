@@ -138,28 +138,40 @@
     }
   }
   
-#post-create-textmedia {
-display: none;
-width: 100vw;
-border-radius: $border-radius-m;
-box-shadow: $shadow;
-background-color: white;
+#post-create-textmedia { 
+    display: none; 
+    width: 100vw; 
+    border-radius: $border-radius-m; 
+    box-shadow: $shadow; 
+    background-color: white;
+    margin-top: 1.5rem;
+    @media screen  and (min-width: 924px) {
+        width: 640px;    
+    }
 }
 
 #post-create-link {
-display: none;
-width: 100vw;
-border-radius: $border-radius-m;
-box-shadow: $shadow;
-background-color: white;
+    display: none;
+    width: 100vw;
+    border-radius: $border-radius-m;
+    box-shadow: $shadow;
+    background-color: white; 
+    margin-top: 1.5rem;
+    @media screen  and (min-width: 924px) {
+        width: 640px;    
+    }
 }
 
 #post-create-media {
-display: none;
-width: 100vw;
-border-radius: $border-radius-m;
-box-shadow: $shadow;
-background-color: white;
+    display: none;
+    width: 100vw;
+    border-radius: $border-radius-m;
+    box-shadow: $shadow;
+    background-color: white;
+    margin-top: 1.5rem;
+    @media screen  and (min-width: 924px) {
+        width: 640px;    
+    }
 }
 
 /********Update********/
