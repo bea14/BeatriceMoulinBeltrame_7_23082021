@@ -385,12 +385,12 @@ export default {
     deletePost() {      
       const postId = this.postData.id;
       const token = sessionStorage.getItem("token");
-      let media_url = this.postData.media_url? this.postData.media_url : null;
+      //let media_url = this.postData.media_url? this.postData.media_url : null;
       //requête delete api/topics/:id
       axios
       .delete('http://localhost:3000/api/topics/'+postId,{
           headers: { "Authorization": "Bearer " + token },
-        data: { media_url },
+        //data: { media_url },
       })
       //si OK, recharge la page
       .then((response) => {
