@@ -1,20 +1,14 @@
 <template>
-<div 
-  class="RadioInput" 
-  :class="[value === v_value?'field__radio--checked':'']"
->
+  <div class="RadioInput">
     <label
-      :for="name"
-      @click="$emit('input', v_value)"
     >
     <input
       type="radio"
-      :id="name"
       :name="name"
-      ref="input"
-      v-model="value"      
-      value="label"
+      v-model="radioButtonValue"      
+      :value="label"
      />
+     {{ label }}
     </label>
   </div>
 </template>
@@ -23,10 +17,6 @@
 export default {
   name: "RadioInput",
   props: {
-    vid: {
-      type: String,
-      default: undefined
-    },
     name: {
       type: String,
       default: ""
@@ -35,14 +25,21 @@ export default {
       type: String,
       default: ""
     },
-    rules: {
-      type: [Object, String],
-      default: ""
-    },
     value: {
     },
     v_value: {
     },    
   },
+  computed: {
+        radioButtonValue: {
+            get: function() {
+                return this.value
+            },
+            set: function() {
+                // Communicate the change to parent component so that selectedValue can be updated
+                this.$emit("change", this.label)
+            }
+        }
+    }
 };
 </script>
