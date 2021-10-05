@@ -86,38 +86,6 @@
       <div class="boutons">
         <Bouton @click="goToPage()" text="Retourner à la page principale" class="submitButton" />
       </div>
-      <!--<Modal ref="modaleSuppressionUser">
-        <template v-slot:header>
-          <h1>Suppression du compte</h1>
-        </template>
-        <template v-slot:body>
-          <p>Etes-vous sûr(e) de vouloir supprimer ce compte?</p>
-          <p>Cette opération est irréversible.</p>
-          <p>Cliquez sur Confirmer pour confirmer la suppression et sur Annuler pour annuler la suppression</p>
-        </template>
-        <template v-slot:footer>
-          <div>            
-            <Bouton @click="deleteUser(userId)" text="Confirmer" />      
-            <Bouton @click="$refs.modaleSuppressionUser.closeModal()" text="Annuler" />
-          </div>
-        </template>
-      </Modal>    
-      <Modal ref="modaleSuppressionPost" :postId="`${post.id}`">
-        <template v-slot:header>
-          <h1>Suppression de l'article</h1>
-        </template>
-        <template v-slot:body>
-          <p>Etes-vous sûr(e) de vouloir supprimer cet articel?</p>
-          <p>Cette opération est irréversible.</p>
-          <p>Cliquez sur Confirmer pour confirmer la suppression et sur Annuler pour annuler la suppression</p>
-        </template>
-        <template v-slot:footer>
-          <div>            
-            <Bouton @click="deletePost(postId)" text="Confirmer" />      
-            <Bouton @click="$refs.modaleSuppressionPost.closeModal()" text="Annuler" />
-          </div>
-        </template>
-      </Modal>-->
     </div>
   </div>
 </template>
@@ -125,7 +93,6 @@
 <script>
 const axios = require("axios").default;
 import Header from "../components/layout/LayoutHeader.vue";
-//import Modal from "../components/modal.vue";
 import Bouton from "../components/Bouton.vue";
 import router from "../router";
 
@@ -133,7 +100,6 @@ export default {
   name: "Admin",
   components: {
     Header,
-    //Modal,
     Bouton
   },
   data() {
@@ -156,24 +122,60 @@ export default {
       const token = sessionStorage.getItem("token");
       //appel à l'API GET api/users/profile/ pour récupérer tous les utilisateurs
       axios
-        .get("http://localhost:3000/api/users/profile/", {
-          headers: { 'Authorization': `Bearer ${token}` },
-        })
-        .then((response) => {
-          this.allUsers = response.data.results;
-        });
+      .get("http://localhost:3000/api/users/profile/", {
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+      .then((response) => {
+        this.allUsers = response.data.results;
+      })
+      .catch (function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
     },
     getPosts() {
       //on récupère le token pour l'authentification des routes
       const token = sessionStorage.getItem("token");
       //appel à l'API GET api/topics/ pour récupérer tous les posts
       axios
-        .get("http://localhost:3000/api/topics", {
-          headers: { 'Authorization': "Bearer " + token },
-        })
-        .then((response) => {
-          this.allPosts = response.data.post;
-        });
+      .get("http://localhost:3000/api/topics", {
+        headers: { 'Authorization': "Bearer " + token },
+      })
+      .then((response) => {
+        this.allPosts = response.data.post;
+      })
+      .catch (function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
     },
     //nombre de posts signales    
     reportedPostsCount() {
@@ -182,9 +184,9 @@ export default {
     },
     //Verifie si un post est signale
     postIsReported(id){
-        let postIsReported = false;
-        const postReported = this.allPosts.filter((post) => post.isreported == "O" && post.id == id);
-        if (postReported.length != 0) {postIsReported = true}
+      let postIsReported = false;
+      const postReported = this.allPosts.filter((post) => post.isreported == "O" && post.id == id);
+      if (postReported.length != 0) {postIsReported = true}
       return postIsReported;
     },
     //Suppression utilisateur
@@ -228,39 +230,39 @@ export default {
     },
     //Suppression post
     deletePost(id) {      
-            const postId = id;
-            const token = sessionStorage.getItem("token");
-            let media_url = this.allPosts.media_url? this.allPosts.media_url : null;
-            //requête delete api/topics/:id
-            axios
-            .delete('http://localhost:3000/api/topics/'+postId,{
-                headers: { "Authorization": "Bearer " + token },
-                data: { media_url },
-            })
-            //si OK, on recharge la page
-            .then((response) => {
-                console.log(response);
-                window.location.reload();
-            })
-            .catch (function (error) {
-                if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-                } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
-                } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log('Error', error.message);
-                }
-                console.log(error.config);
-            });
-        },
+      const postId = id;
+      const token = sessionStorage.getItem("token");
+      let media_url = this.allPosts.media_url? this.allPosts.media_url : null;
+      //requête delete api/topics/:id
+      axios
+      .delete('http://localhost:3000/api/topics/'+postId,{
+          headers: { "Authorization": "Bearer " + token },
+          data: { media_url },
+      })
+      //si OK, on recharge la page
+      .then((response) => {
+          console.log(response);
+          window.location.reload();
+      })
+      .catch (function (error) {
+        if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+        } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+        } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
+    },
     //Fonction qui sert à envoyer un message à l'utilisateur
     mailToUser(id) {
       alert("Vous pouvez envoyer un message privé à l'utilisateur "+id+". Désolé mais cette fonction n'est pas encore utilisable !")
