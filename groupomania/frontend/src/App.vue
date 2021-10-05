@@ -1,4 +1,4 @@
-<script>
+vue <script>
 import Footer from "./components/layout/LayoutFooter";
 export default {
   name: "App",
