@@ -1,16 +1,5 @@
 <template>
-  <div class="filterposts">
-    <!--Filtre sur les  catégories-->
-    <!--
-    <div class="items">
-      <label for="tag">Choisissez une catégorie :</label>
-        <select v-model="selected" @change="changeTag($event)">          
-          <option value="" selected disabled>--Choisir une catégorie--</option>
-          <option v-for="tag in tags" :value="tag.text" :key="tag.value" :class="getCategorie(tag.name)">
-            {{ tag.text }}
-          </option>
-        </select>
-    </div>-->   
+  <div class="filterposts">  
     <!--Tri sur les dates des posts-->
     <div class="items">
       <label for="tag">Trier: </label>
@@ -36,17 +25,6 @@ export default {
         {text:'la dernière semaine', value: 'LastWeek'},
         {text:'Le dernier mois', value: 'LastMonth'},
       ],
-      /*selected: "--Choisir une catégorie--",
-      tags: [
-            {text:'Environnement', value: 'Environnement'},
-            {text:'Science', value: 'Science'},
-            {text:'Technologie', value: 'Technologie'},
-            {text:'Actualités', value: 'Actualités'},
-            {text:'Humour', value: 'Humour'},
-            {text:'Au travail', value: 'Au travail'},
-            {text:'Divers', value: 'Divers'},
-        ],
-      tag:''*/
     };
   },
   methods: {

@@ -136,12 +136,10 @@
 
 <script>
 const axios = require("axios").default;
-//import Modal from "../modal.vue";
 import CommentsView from "../posts/postsComments.vue";
 
 export default {
   components: {
-    //Modal,
     CommentsView,
   },
   props: ["postData"],
@@ -369,8 +367,6 @@ export default {
       .catch((err) => {
         console.log(err.response.data.errors[0].msg);
       });
-      document.getElementById('createCommentInput');
-      console.log('ddddddddd',document.getElementById('createCommentInput'.value))
     },
     /*******Articles*******/
     //article signale
