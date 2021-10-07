@@ -51,7 +51,6 @@ export default {
   },
   methods: {
     onSubmit() {
-      //this.submitted = true;
       //Création de l'utilisateur, on récupère les données du formulaire
       const user = {
         lastname: this.lastname, 
