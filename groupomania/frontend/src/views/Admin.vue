@@ -19,19 +19,33 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col">id</th>
+              <th scope="col">id</th>              
+              <th scope="col">role</th>
               <th scope="col">Pseudo</th>
               <th scope="col">Avatar</th>
-              <th scope="col">Supprimer</th>
+              <th scope="col" v-if="userIsAdmin" >Supprimer</th>
               <th scope="col">Contacter</th>
             </tr>
           </thead>
           <tbody class="table-users">
             <tr v-for="user in allUsers" :key="user.id">
               <th scope="row">{{ user.id }}</th>
+              <th scope="row">{{ user.role }}
+                <div v-if="userIsAdmin">
+                   <input                   
+                    type="text"
+                    id="newRole"
+                    name="updateRole"
+                    placeholder="role"
+                    v-model="user.role"
+                    onfocus="if(value !== '') {value=''}"
+                    @keyup.enter="updateRole(`${user.id}`,`${user.role}`,`${user.avatar}`)"
+                  />
+                </div>
+              </th>
               <td>{{ user.pseudo }}</td>
               <td><img :src="`${user.avatar}`" alt="avatar utilisateur"></td>
-              <td>
+              <td v-if="userIsAdmin" >
                 <!--<div @click="$refs.modaleSuppressionUser.openModal()" :userId="`${user.id}`">-->
                 <div @click="deleteUser(`${user.id}`)">
                   <i class="fas fa-user-times fa-lg" aria-hidden="true"></i>
@@ -103,19 +117,30 @@ export default {
     Bouton
   },
   data() {
+      let userIsAdmin = this.functionUserIsAdmin();
     return {
       allUsers: [],
       allPosts: [],
+      userIsAdmin,
     };
   },
    //Quand le DOM est monté, on lance getUsers et getPosts
   mounted() {
     this.getUsers();
     this.getPosts();
+    this.functionUserIsAdmin();
   },
   methods: {
     goToPage() {
       router.push("/Posts");
+    },
+    functionUserIsAdmin(){
+      const role = sessionStorage.getItem('role') || 0;
+      let userIsAdmin = false;
+      if (role ==2) {
+        userIsAdmin = true
+        return userIsAdmin
+      }
     },
     getUsers() {
       //on récupère le token pour l'authentification des routes
@@ -127,6 +152,48 @@ export default {
       })
       .then((response) => {
         this.allUsers = response.data.results;
+      })
+      .catch (function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
+    },
+    updateRole(id,role,avatar){
+      //on récupère le token pour l'authentification des routes
+      const token = sessionStorage.getItem("token");
+      //on récupère l'id de l'utilisateur à supprimer
+      const userId = id;
+      const dataForm = new FormData();
+      let updatedate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      let newRole = parseInt(role);      
+      let userAvatar = avatar.split("/upload/Avatars/")[1];
+      dataForm.append("avatar", userAvatar);
+      dataForm.append("updatedate", updatedate);
+      dataForm.append("role", newRole);
+      //appel à l'API GET api/users/profile/:id pour updater l'utilisateur
+      axios
+      .patch('http://localhost:3000/api/users/profile/'+userId,dataForm, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+      .then((response) => {
+        console.log(response);
+        alert('Le rôle a bien été mis à jour!');
+        this.getUsers();
+        location.reload();
       })
       .catch (function (error) {
         if (error.response) {
@@ -232,12 +299,10 @@ export default {
     deletePost(id) {      
       const postId = id;
       const token = sessionStorage.getItem("token");
-      let media_url = this.allPosts.media_url? this.allPosts.media_url : null;
       //requête delete api/topics/:id
       axios
       .delete('http://localhost:3000/api/topics/'+postId,{
           headers: { "Authorization": "Bearer " + token },
-          data: { media_url },
       })
       //si OK, on recharge la page
       .then((response) => {
