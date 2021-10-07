@@ -31,7 +31,7 @@ exports.createPost = (req, res,next) => {
         newPost.id = id;
         return res.status(200).json({
             message: 'post créé',
-            post: newPost
+            //post: newPost
         });
     });
 };
@@ -87,7 +87,8 @@ exports.updatePost = (req, res, next) => {
         } else if (results.length === 0) {
             return res.status(401).json({ message: 'post inexistant' });
         } else {
-            return res.status(200).json({ user: results[0], message: 'post modifié' });
+            //return res.status(200).json({ posts: results[0], message: 'post modifié' });
+            return res.status(200).json({ message: 'post modifié' });
         }
     });
 }

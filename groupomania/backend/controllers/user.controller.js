@@ -92,7 +92,7 @@ exports.signup = (req, res, next) => {
                     newUser.id = id;
                     return res.status(201).json({
                         message: 'Votre compte a bien été créé. Vous pouvez maintenant vous connecter!',
-                        user: newUser
+                        //user: newUser
                     });
                 });
             });
@@ -112,10 +112,10 @@ exports.login = (req, res, next) => {
             return res.status(500).json({ error });
         }
         //Si pas de résultat, retourne un message d'erreur
-        if (results.length === 0) {
+        if (results.length == 0) {
             return res.status(401).json({
                 error: true,
-                message: 'Le pseudo ou le mdp est invalide'
+                message: 'Le pseudo est invalide'
             })
         }
         // si on a un résultat, on compare le mot de passe haché de la DB avec le mot de passe entré et haché       
@@ -231,7 +231,7 @@ exports.deleteProfile = (req, res, next) => {
             return res.status(401).json({ message: 'utilisateur inexistant' });
         } else {
             //Ok donc message
-            return res.status(200).json({ user: results[0], message: 'utilisateur supprimé' });
+            return res.status(200).json({ message: 'utilisateur supprimé' });
         }
     });
     //s'il y a un avatar, on le supprime aussi

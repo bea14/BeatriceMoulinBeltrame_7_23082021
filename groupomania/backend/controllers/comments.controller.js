@@ -22,7 +22,7 @@ exports.createComment = (req, res, next) => {
         newComment.id = id;
         return res.status(200).json({
             message: 'commentaire créé',
-            comment: newComment
+            //comment: newComment
         });
     });
 }
@@ -83,7 +83,8 @@ exports.updateComment = (req, res,) => {
         } else if (results.length === 0) {
             return res.status(401).json({ message: 'commentaire inexistant' });
         } else {
-            return res.status(200).json({ user: results[0], message: 'commentaire modifié' });
+            //return res.status(200).json({ comments: results[0], message: 'commentaire modifié' });
+            return res.status(200).json({ message: 'commentaire modifié' });
         }
     });
 }
