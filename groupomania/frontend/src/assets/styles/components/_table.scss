@@ -30,12 +30,20 @@
     background-color: rgba(0,0,0,0.05);
 }
 
-.table-users tr td {
-  text-align: center;
-  img {
-    width: 40px;
+
+.table-users{
+  tr td {
+    text-align: center;
+    img {
+      width: 40px;
+    }
   }
-}
+  #newRole {
+    width: 60px;
+    max-width: 60px;
+  }
+} 
+
 
 .table-posts tr td{
   max-width: 220px; 
