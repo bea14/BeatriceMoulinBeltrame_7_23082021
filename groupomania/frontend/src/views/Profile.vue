@@ -150,13 +150,11 @@ export default {
     userRole(){
       let userRole="";
       const role = sessionStorage.getItem("role");
-      console.log(role)
       role == 0 
         ? userRole = "membre"
         : role == 1
           ? userRole ="modérateur"
           : userRole = "administrateur"
-          console.log(userRole)
       return userRole
     },
     saveAvatar(selected){
@@ -169,7 +167,6 @@ export default {
     },
     addFile(e) {
       let files = e.dataTransfer.files;
-      console.log(files);
       [...files].forEach(file => {
         this.files.push(file);
       });
@@ -234,8 +231,9 @@ export default {
     updateUser() {
       let userId = parseInt(sessionStorage.getItem("userId"));
       const avatar = sessionStorage.getItem('avatar');
+      let birthdate ="";
       let updatedate = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      let birthdate = new Date(this.user.birthdate).toISOString().slice(0, 19).replace('T', ' ');
+      if (this.user.birthdate != null) {birthdate = new Date(this.user.birthdate).toISOString().slice(0, 19).replace('T', ' ')};
       this.user.avatar = this.file ? this.file.name : avatar.split("/upload/Avatars/")[1];
       const dataForm = new FormData();
       if (this.user.lastname !="") dataForm.append("lastname", this.user.lastname);
@@ -243,9 +241,7 @@ export default {
       if (this.user.pseudo !="") dataForm.append("pseudo", this.user.pseudo);      
       if (this.user.email !="") dataForm.append("email", this.user.email);
       if (this.user.sexe !="") dataForm.append("sexe", this.user.sexe);
-      console.log('sss',this.user.sexe)
-      if (this.user.birthdate !="") dataForm.append("birthdate", birthdate);
-        console.log('bdbdbd',this.user.birthdate)
+      if (this.user.birthdate != null) dataForm.append("birthdate", birthdate);
       if (this.user.avatar !="") dataForm.append("avatar", this.user.avatar);
       if (this.user.bio !="") dataForm.append("bio", this.user.bio);
       dataForm.append("updatedate", updatedate);
@@ -260,7 +256,6 @@ export default {
       // si Ok, message
       .then((response) => {
         console.log(response);
-        console.log('UserUpdated',response.user);
         alert('Votre profil a bien été mis à jour!');
         this.getUser();
         location.reload();
