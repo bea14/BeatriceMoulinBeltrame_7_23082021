@@ -5,16 +5,22 @@
       <div>
         <router-link to="/Posts">
           <i class="fas fa-arrow-left" aria-hidden="true"></i>
-          <span>Retour au forum</span>
+          <span>&nbsp;Retour au forum</span>
         </router-link>
       </div>
       <div class="admin-title">
         <h1>Administration du forum</h1>
         <div v-if="userIsModerator">
-          En tant que modérateur, vous pouvez supprimer des articles et des
-          commentaires. Vous pouvez consulter le contenu de l'article en
-          cliquant sur le pseudo de l'auteur. Pour supprimer l'article, il faut
-          cliquer sur la poubelle de la ligne de l'article
+          En tant que modérateur, vous pouvez :
+          <ul>
+            <li>
+              - Supprimer un article : il faut cliquer sur la poubelle 
+              de la ligne de l'article (vous pouvez aussi le faire dans le forum). 
+            </li>
+            <li>
+              - Supprimer un commentaire : uniquement dans le forum au niveau des commentaires.
+            </li>
+          </ul>
         </div>
         <div v-else-if="userIsAdmin">
           En tant qu'administrateur, vous pouvez :
@@ -24,16 +30,17 @@
               colonne supprimer correspondante)
             </li>
             <li>
-              - Attribuer un rôle à un membre ( 0 = membre, 1 = modérateur, 2 =
-              administrateur)
+              - Attribuer un rôle à un membre, qu'il soit membre, modérateur ou administrateur ( 0 = membre, 
+              1 = modérateur, 2 = administrateur)
             </li>
             <li>
-              - Supprimer des articles en cliquant sur la poubelle de la ligne
-              de l'article
+              - Supprimer un article en cliquant sur la poubelle de la ligne
+              de l'article (ou directement dans le forum)
+            </li>
+            <li>
+              - Supprimer un commentaire (uniquement dans le forum)
             </li>
           </ul>
-          Vous pouvez consulter le contenu de l'article en cliquant sur le
-          pseudo de l'auteur.
         </div>
       </div>
       <div class="table-heading">
@@ -58,17 +65,14 @@
               <th scope="row">
                 {{ user.role }}
                 <div v-if="userIsAdmin">
-                  <form class="adminRole">
                     <input
-                      type="number"
-                      min="0"
-                      max="2"
+                      type="text"
                       id="newRole"
                       name="updateRole"
                       placeholder="role"
                       v-model="user.role"
                       onfocus="if(value !== '') {value=''}"
-                      @keyup.enter="
+                      @input="
                         updateRole(
                           `${user.id}`,
                           `${user.role}`,
@@ -76,8 +80,6 @@
                         )
                       "
                     />
-                    <input type="submit" value="Modifier" />
-                  </form>
                 </div>
               </th>
               <td>{{ user.pseudo }}</td>
@@ -112,8 +114,8 @@
             <tr>
               <th scope="col">id</th>
               <th scope="col">Titre</th>
-              <th scope="col">Image</th>
               <th scope="col">Contenu</th>
+              <th scope="col">Voir</th>
               <th scope="col">Auteur</th>
               <th scope="col">Signalement</th>
               <th scope="col">Supprimer</th>
@@ -127,23 +129,20 @@
             >
               <th scope="row">{{ post.id }}</th>
               <td>{{ post.title }}</td>
-              <td>
-                <div v-if="post.media_url">
-                  <img :src="`${post.media_url}`" alt="image de l'article" />
-                </div>
-              </td>
               <td>{{ post.content }}</td>
               <td>
-                <div
+              <div
                   @click="
                     $refs.modaleGetOnePost.openModal();
                     getOnePost(`${post.id}`);
                   "
                   :postId="`${post.id}`"
-                >
-                  {{ post.pseudo }}
+                >                
+                  <i class="fas fa-eye" aria-hidden="true"></i>
                 </div>
               </td>
+              
+              <td>{{ post.pseudo }}</td>
               <td>{{ post.isreported }}</td>
               <td>
                 <div @click="deletePost(`${post.id}`)">
@@ -159,6 +158,9 @@
           </template>
           <template v-slot:body>
             <div class="card-body">
+              <div v-if="post.media_url">
+                <img :src="`${post.media_url}`" alt="image de l'article" />
+              </div>
               <!-- Titre du post + catégorie -->
               <div class="card-body-title">
                 <h2>Titre : {{ post.title }}</h2>
@@ -319,7 +321,6 @@ export default {
           console.log(response);
           alert("Le rôle a bien été mis à jour!");
           this.getUsers();
-          location.reload();
         })
         .catch(function (error) {
           if (error.response) {
