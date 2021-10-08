@@ -39,20 +39,24 @@
     }
   }
   #newRole {
-    width: 60px;
-    max-width: 60px;
+    width: 40px;
+    max-width: 40px;
   }
 } 
 
 
 .table-posts tr td{
-  max-width: 220px; 
+  max-width: 200px; 
   word-wrap: break-word;
   text-align: center;  
   word-break: break-word;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  img {
+    width: 40px;
+    max-width: 40px;
+  }
 }
 
 .red {
