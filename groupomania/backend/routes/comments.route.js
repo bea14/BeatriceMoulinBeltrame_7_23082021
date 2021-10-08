@@ -9,7 +9,7 @@ const auth = require('../middleware/auth');
 
 //Definition des routes pour les commentaires
 commentRouter.post("/:postId/comments", auth, commentCtrl.createComment); //Creation nouveau commentaire pour le post id
-commentRouter.get('/:postId/comments',auth, commentCtrl.getAllComments); //affichage de tous les commentaires
+commentRouter.get('/:postId/comments',auth, commentCtrl.getAllComments); //affichage de tous les commentaires pour un post
 /*commentRouter.get('/comments/:userId',commentCtrl.getAllCommentsForUser); //affichage de tous les posts d'un utilisateur*/
 commentRouter.get('/:postId/comments/:commentId',auth, commentCtrl.getOneComment); //affichage d'un commentaire ayant l'id id
 commentRouter.patch("/:postId/comments/:commentId", auth, commentCtrl.updateComment); //mise à jour d'un commentaire
