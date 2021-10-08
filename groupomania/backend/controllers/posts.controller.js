@@ -145,12 +145,12 @@ exports.likeDislikePost = (req, res,next) => {
 
 //get like ou dislike d'un post
 exports.getLikeDislikePost = (req, res,next) => {
-    //on récupère l'id du post à supprimer
+    //on récupère l'id du post à récupérer
     const postId = req.params.id;
     sql.query('SELECT topicsvotes.id,topicsvotes.likedislike,topicsvotes.user, topicsvotes.topic, user.pseudo FROM topicsvotes INNER JOIN user ON topicsvotes.user = user.id WHERE topic=?',[postId],(error, results, fields) => {
       if (error) {
         return res.status(500).json({ error });
       }
-      return res.status(200).json({ post: results });
+      return res.status(200).json({ like: results });
     }); 
 }
