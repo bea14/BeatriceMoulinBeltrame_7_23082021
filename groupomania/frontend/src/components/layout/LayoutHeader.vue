@@ -9,26 +9,44 @@
     </div>
     <div class="user">
       <div class="user-details" @click="toggleVisibility('menu-details-click')">
-        <img :src="`${avatar}`" alt="avatar utilisateur" class="user-details-avatar"/>
+        <img
+          :src="`${avatar}`"
+          alt="avatar utilisateur"
+          class="user-details-avatar"
+        />
         <i class="fas fa-sort-down"></i>
         <section class="menu-details" id="menu-details-click">
           <div class="menu-details-name">
-              <h2>{{ this.userName }}</h2>
+            <h2>{{ this.userName }}</h2>
           </div>
           <div class="menu-details-submenu">
-              <div class="buttons-full">
-                  <router-link role="button" to="/CreatePost">Ecrire un article</router-link>
-              </div>
-              <p><router-link :to="{ name: 'Profile', params: { userId: this.userId } }">Mon profil</router-link></p>              
-              <p  v-if="userIsAdmin"> <router-link :to="{ name: 'Admin' }">Administration</router-link></p>
-              <p> <router-link :to="{ name: 'User', params: { userId: this.userId } }">Mes articles</router-link></p>
-              <!--<p> Mes commentaires</p>
+            <div class="buttons-full">
+              <router-link role="button" to="/CreatePost"
+                >Ecrire un article</router-link
+              >
+            </div>
+            <p>
+              <router-link
+                :to="{ name: 'Profile', params: { userId: this.userId } }"
+                >Mon profil</router-link
+              >
+            </p>
+            <p v-if="userIsAdmin">
+              <router-link :to="{ name: 'Admin' }">Administration</router-link>
+            </p>
+            <p>
+              <router-link
+                :to="{ name: 'User', params: { userId: this.userId } }"
+                >Mes articles</router-link
+              >
+            </p>
+            <!--<p> Mes commentaires</p>
               <p> Messages</p>-->
-              <p @click="Logout()">Déconnexion</p>
+            <p @click="Logout()">Déconnexion</p>
           </div>
         </section>
       </div>
-      </div>
+    </div>
   </header>
 </template>
 
@@ -57,7 +75,7 @@ export default {
     goToHome() {
       this.$emit("goToHome", true);
     },
-    Logout(){
+    Logout() {
       sessionStorage.clear();
       router.push("/Login");
     },
@@ -65,14 +83,14 @@ export default {
       var div = document.getElementById(el);
       div.style.display = div.style.display == "block" ? "none" : "block";
     },
-    functionUserIsAdmin(){
-      const role = sessionStorage.getItem('role') || 0;
+    functionUserIsAdmin() {
+      const role = sessionStorage.getItem("role") || 0;
       let userIsAdmin = false;
-      if (role == 1 || role ==2) {
+      if (role == 1 || role == 2) {
         userIsAdmin = true;
-        return userIsAdmin
+        return userIsAdmin;
       }
-    }   
+    },
   },
 };
 </script>

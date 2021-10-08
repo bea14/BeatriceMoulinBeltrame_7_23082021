@@ -1,14 +1,13 @@
 <template>
   <div class="RadioInput">
-    <label
-    >
-    <input
-      type="radio"
-      :name="name"
-      v-model="radioButtonValue"      
-      :value="label"
-     />
-     {{ label }}
+    <label>
+      <input
+        type="radio"
+        :name="name"
+        v-model="radioButtonValue"
+        :value="label"
+      />
+      {{ label }}
     </label>
   </div>
 </template>
@@ -19,27 +18,25 @@ export default {
   props: {
     name: {
       type: String,
-      default: ""
+      default: "",
     },
     label: {
       type: String,
-      default: ""
+      default: "",
     },
-    value: {
-    },
-    v_value: {
-    },    
+    value: {},
+    v_value: {},
   },
   computed: {
-        radioButtonValue: {
-            get: function() {
-                return this.value
-            },
-            set: function() {
-                // Communicate the change to parent component so that selectedValue can be updated
-                this.$emit("change", this.label)
-            }
-        }
-    }
+    radioButtonValue: {
+      get: function () {
+        return this.value;
+      },
+      set: function () {
+        // Communicate the change to parent component so that selectedValue can be updated
+        this.$emit("change", this.label);
+      },
+    },
+  },
 };
 </script>

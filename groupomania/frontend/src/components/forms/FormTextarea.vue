@@ -13,10 +13,14 @@
       :class="{ 'text-gray-700': !errors[0], 'text-red-600': errors[0] }"
     >
       <span>{{ label || name }}</span>
-      <span>{{ required ? ' (obligatoire)' : '' }}</span>
+      <span>{{ required ? " (obligatoire)" : "" }}</span>
     </label>
     <textarea
-      :class="{ 'border-gray-700': !errors[0], 'border-red-600': errors[0], 'has-value': hasValue }"
+      :class="{
+        'border-gray-700': !errors[0],
+        'border-red-600': errors[0],
+        'has-value': hasValue,
+      }"
       :id="name"
       :type="type"
       :placeholder="placeholder"
@@ -28,10 +32,7 @@
       value="innerValue"
     >
     </textarea>
-    <span
-      v-bind="ariaMsg"
-      v-if="errors[0]"
-    >{{ errors[0] }}</span>
+    <span v-bind="ariaMsg" v-if="errors[0]">{{ errors[0] }}</span>
   </ValidationProvider>
 </template>
 
@@ -41,28 +42,28 @@ import { ValidationProvider } from "vee-validate";
 export default {
   name: "TextAreaInput",
   components: {
-    ValidationProvider
+    ValidationProvider,
   },
   props: {
     vid: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     name: {
       type: String,
-      default: ""
+      default: "",
     },
     label: {
       type: String,
-      default: ""
+      default: "",
     },
     rules: {
       type: [Object, String],
-      default: ""
+      default: "",
     },
     placeholder: {
       type: String,
-      default: ""
+      default: "",
     },
     type: {
       type: String,
@@ -75,22 +76,22 @@ export default {
           "tel",
           "search",
           "number",
-          "email"
+          "email",
         ].includes(value);
-      }
+      },
     },
     value: {
       type: null,
-      default: ""
-    }
+      default: "",
+    },
   },
   data: () => ({
-    innerValue: ""
+    innerValue: "",
   }),
   computed: {
     hasValue() {
       return !!this.innerValue;
-    }
+    },
   },
   watch: {
     innerValue(value) {
@@ -100,12 +101,12 @@ export default {
       if (val !== this.innerValue) {
         this.innerValue = val;
       }
-    }
+    },
   },
   created() {
     if (this.value) {
       this.innerValue = this.value;
     }
-  }
+  },
 };
 </script>

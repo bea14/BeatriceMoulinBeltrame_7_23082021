@@ -8,7 +8,7 @@
           class="imagetop"
           alt="collegues de bureau se tapant dans les poings"
         />
-      </div>     
+      </div>
       <div class="welcome_top_title">
         <h1>Bienvenue sur le réseau social de l'entreprise Groupomania !</h1>
       </div>

@@ -1,4 +1,5 @@
-vue <script>
+vue
+<script>
 import Footer from "./components/layout/LayoutFooter";
 export default {
   name: "App",
@@ -9,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <div id="app"> 
+  <div id="app">
     <main>
       <router-view />
     </main>

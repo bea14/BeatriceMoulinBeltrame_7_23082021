@@ -46,13 +46,13 @@ const routes = [
     component: posts,
   },*/
   {
-    path: '/Posts/:id',
-    name: 'UpdatePost',
+    path: "/Posts/:id",
+    name: "UpdatePost",
     component: UpdatePost,
-  },  
+  },
   {
-    path: '/Posts/:postId/Comments/:commentId',
-    name: 'UpdateComment',
+    path: "/Posts/:postId/Comments/:commentId",
+    name: "UpdateComment",
     component: UpdateComment,
   },
   {

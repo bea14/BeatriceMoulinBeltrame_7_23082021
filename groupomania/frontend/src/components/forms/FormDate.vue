@@ -1,42 +1,38 @@
 <template>
-  <div
-    class="FormDate"
-    @keyup.capture="updateValue"
-  >
+  <div class="FormDate" @keyup.capture="updateValue">
     <input
       v-if="showDay"
       ref="day"
       v-model="day"
       class="FormDate__input FormDate__input--day"
       type="number"
-      placeholder= "dd"
+      placeholder="dd"
       @input="updateDay"
-      @blur="day = day.padStart(2, 0)">
-    <span
-      v-if="showDay && showMonth"
-      class="FormDate__divider"
-    >/</span>
+      @blur="day = day.padStart(2, 0)"
+    />
+    <span v-if="showDay && showMonth" class="FormDate__divider">/</span>
     <input
       v-if="showMonth"
       ref="month"
       v-model="month"
       class="FormDate__input FormDate__input--month"
       type="number"
-      placeholder= "mm"
+      placeholder="mm"
       @input="updateMonth"
-      @blur="month = month.padStart(2, 0)">
-    <span
-      v-if="showYear && (showDay || showMonth)"
-      class="FormDate__divider"
-    >/</span>
+      @blur="month = month.padStart(2, 0)"
+    />
+    <span v-if="showYear && (showDay || showMonth)" class="FormDate__divider"
+      >/</span
+    >
     <input
       v-if="showYear"
       ref="year"
       v-model="year"
       class="FormDate__input FormDate__input--year"
       type="number"
-      placeholder= "yyyy"
-      @blur="year = year.padStart(4, 0)">
+      placeholder="yyyy"
+      @blur="year = year.padStart(4, 0)"
+    />
   </div>
 </template>
 
@@ -57,11 +53,11 @@ export default {
       default: true,
     },
   },
-   data() {
+  data() {
     return {
-      day: `${this.value ? new Date(this.value).getDate() : ''}`,
-      month: `${this.value ? new Date(this.value).getMonth() + 1 : ''}`,
-      year: `${this.value ? new Date(this.value).getFullYear(): ''}`,
+      day: `${this.value ? new Date(this.value).getDate() : ""}`,
+      month: `${this.value ? new Date(this.value).getMonth() + 1 : ""}`,
+      year: `${this.value ? new Date(this.value).getFullYear() : ""}`,
     };
   },
   methods: {
@@ -78,9 +74,11 @@ export default {
     },
     // Fonction qui sert à convertir les jours, mois et années en timestamp qui sera emit
     updateValue() {
-      const timestamp = Date.parse(`${this.year.padStart(4, 0)}-${this.month}-${this.day}`);
+      const timestamp = Date.parse(
+        `${this.year.padStart(4, 0)}-${this.month}-${this.day}`
+      );
       if (Number.isNaN(timestamp)) return;
-      this.$emit('input', timestamp);
+      this.$emit("input", timestamp);
     },
   },
   watch: {
@@ -89,5 +87,5 @@ export default {
       if (current > 9999) this.year = prev;
     },
   },
-}
+};
 </script>

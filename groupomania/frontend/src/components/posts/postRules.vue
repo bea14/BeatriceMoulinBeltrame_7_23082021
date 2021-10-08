@@ -1,8 +1,9 @@
 <template>
   <div class="post-rules">
     <div class="post-rules-head">
-      <span>Le forum a un modérateur. Vous pouvez faire appel à lui/elle
-        et signaler des articles/commentaires/utilisateurs
+      <span
+        >Le forum a un modérateur. Vous pouvez faire appel à lui/elle et
+        signaler des articles/commentaires/utilisateurs
       </span>
     </div>
     <div class="rules">
