@@ -296,7 +296,7 @@ export default {
         })
         .then((response) => {
           this.allLikes = response.data.post;
-          return (this.allLikes = response.data.post);
+          return (this.allLikes = response.data.like);
         })
         .catch((err) => {
           console.log(err.response.data.errors[0].msg);
